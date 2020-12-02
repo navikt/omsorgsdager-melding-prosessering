@@ -1,0 +1,95 @@
+{
+  "topics": [
+    {
+      "topicName": "privat-omsorgsdager-melding-mottatt",
+      "configEntries": {
+        "retention.ms": 2628000000
+      },
+      "members": [
+        {
+          "member": "srv-oms-alene-mtk",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srv-oms-alene-prs",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "O158190",
+          "role": "MANAGER"
+        },
+        {
+          "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
+        }
+      ],
+      "numPartitions": 3
+    },
+    {
+      "topicName": "privat-omsorgsdager-melding-preprossesert",
+      "configEntries": {
+        "retention.ms": 2628000000
+      },
+      "members": [
+        {
+          "member": "srv-oms-alene-prs",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srv-oms-alene-prs",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "O158190",
+          "role": "MANAGER"
+        },
+        {
+          "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
+        }
+      ],
+      "numPartitions": 3
+    },
+    {
+      "topicName": "privat-omsorgsdager-melding-cleanup",
+      "configEntries": {
+        "retention.ms": 2628000000
+      },
+      "members": [
+        {
+          "member": "srv-oms-alene-prs",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srv-oms-alene-prs",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "srv-sif-innsyn-mtk",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "O158190",
+          "role": "MANAGER"
+        },
+        {
+          "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
+        }
+      ],
+      "numPartitions": 3
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: {{app}}
+  namespace: {{namespace}}
+  labels:
+    team: {{team}}
+spec:
+  image: {{ image }}
+  azure:
+    application:
+      enabled: true
+      tenant: {{tenant}}
+  port: 8080
+  accessPolicy:
+    outbound:
+      rules:
+        - application: k9-mellomlagring
+      external:
+        - host: api-gw-q1.oera.no
+        - host: oauth2.googleapis.com
+  liveness:
+    path: isalive
+    initialDelay: 20
+    timeout: 1
+    periodSeconds: 5
+    failureThreshold: 10
+  readiness:
+    path: isready
+    initialDelay: 20
+    timeout: 1
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  replicas:
+    min: {{minReplicas}}
+    max: {{maxReplicas}}
+    cpuThresholdPercentage: 90
+  prometheus:
+    enabled: true
+    path: /metrics
+  envFrom:
+    - secret: omsorgsdager-melding-prosessering.sts-credentials
+    - secret: omsorgsdager-melding-prosessering.apigw-apikey
+  env:
+  {{#each env}}
+     - name: {{@key}}
+       value: "{{this}}"
+  {{/each}}
