@@ -11,7 +11,7 @@
           "role": "PRODUCER"
         },
         {
-          "member": "srv-oms-alene-prs",
+          "member": "srv-omd-melding-prs",
           "role": "CONSUMER"
         },
         {
@@ -36,11 +36,11 @@
       },
       "members": [
         {
-          "member": "srv-oms-alene-prs",
+          "member": "srv-omd-melding-prs",
           "role": "PRODUCER"
         },
         {
-          "member": "srv-oms-alene-prs",
+          "member": "srv-omd-melding-prs",
           "role": "CONSUMER"
         },
         {
@@ -65,11 +65,11 @@
       },
       "members": [
         {
-          "member": "srv-oms-alene-prs",
+          "member": "srv-omd-melding-prs",
           "role": "PRODUCER"
         },
         {
-          "member": "srv-oms-alene-prs",
+          "member": "srv-omd-melding-prs",
           "role": "CONSUMER"
         },
         {
