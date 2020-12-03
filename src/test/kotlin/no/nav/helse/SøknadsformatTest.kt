@@ -1,14 +1,12 @@
 package no.nav.helse
 
 import no.nav.helse.dokument.Søknadsformat
-import no.nav.helse.prosessering.v1.melding.*
+import no.nav.helse.prosessering.v1.melding.FordelingsMelding
+import no.nav.helse.prosessering.v1.melding.KoronaOverføringMelding
+import no.nav.helse.prosessering.v1.melding.MottakerType
 import org.skyscreamer.jsonassert.JSONAssert
-import java.net.URI
 import java.net.URL
-import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
 import kotlin.test.Test
 
 class SøknadsformatTest {
