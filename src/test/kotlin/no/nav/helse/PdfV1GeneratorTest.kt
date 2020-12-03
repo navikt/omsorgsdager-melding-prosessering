@@ -21,6 +21,31 @@ class PdfV1GeneratorTest {
             melding = SøknadUtils.gyldigSøknad(søknadId = id)
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "2-fordelingsmelding-full"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.gyldigSøknad(søknadId = id).copy(
+                type = Meldingstype.FORDELING,
+                overføring = null,
+                fordeling = FordelingsMelding(
+                    mottakerType = MottakerType.SAMVÆRSFORELDER,
+                    samværsavtale = listOf()
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "3-koronaoverføringsmelding-full"
+        pdf = generator.generateSoknadOppsummeringPdf(
+            melding = SøknadUtils.gyldigSøknad(søknadId = id).copy(
+                type = Meldingstype.KORONA,
+                overføring = null,
+                korona = KoronaOverføringMelding(
+                    antallDagerSomSkalOverføres = 10
+                )
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

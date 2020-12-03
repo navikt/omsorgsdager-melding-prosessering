@@ -1,12 +1,12 @@
 package no.nav.helse
 
 import no.nav.helse.dokument.Søknadsformat
-import no.nav.helse.prosessering.v1.melding.*
+import no.nav.helse.prosessering.v1.melding.FordelingsMelding
+import no.nav.helse.prosessering.v1.melding.KoronaOverføringMelding
+import no.nav.helse.prosessering.v1.melding.MottakerType
 import org.skyscreamer.jsonassert.JSONAssert
-import java.time.LocalDate
-import java.time.ZoneId
+import java.net.URL
 import java.time.ZonedDateTime
-import java.util.*
 import kotlin.test.Test
 
 class SøknadsformatTest {
@@ -17,67 +17,59 @@ class SøknadsformatTest {
             søkerFødselsnummer = "123456789",
             mottatt = ZonedDateTime.parse("2018-01-02T03:04:05Z"),
             søknadId = "d559c242-e95f-4dda-8d59-7d0b06985bb3"
-        ))
+        ).copy(
+            fordeling = FordelingsMelding(MottakerType.SAMVÆRSFORELDER, listOf(URL("http://localhost:8080/vedlegg/1"))),
+            korona = KoronaOverføringMelding(15)
+        )
+        )
 
         val forventetSøknad =
             //language=json
             """
             {
+              "id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
               "søknadId": "d559c242-e95f-4dda-8d59-7d0b06985bb3",
-              "mottatt": "2018-01-02T03:04:05.000000006Z",
+              "type": "OVERFORING",
+              "mottatt": "2018-01-02T03:04:05Z",
               "språk": "nb",
               "søker": {
-                "fødselsnummer": "02119970078",
+                "fødselsnummer": "123456789",
                 "fornavn": "Ola",
                 "mellomnavn": "Mellomnavn",
                 "etternavn": "Nordmann",
-                "fødselsdato": "2018-01-24",
+                "fødselsdato": "2018-03-09",
                 "aktørId": "123456"
               },
-              "id": "123456789",
+              "arbeiderINorge": true,
+              "erYrkesaktiv": true,
+              "harAleneomsorg": true,
+              "harUtvidetRett": true,
               "arbeidssituasjon": [
-                "FRILANSER",
-                "SELVSTENDIG_NÆRINGSDRIVENDE"
+                "FRILANSER"
               ],
-              "annenForelder": {
-                "navn": "Berit",
-                "fnr": "02119970078",
-                "situasjon": "FENGSEL",
-                "situasjonBeskrivelse": "Sitter i fengsel..",
-                "periodeOver6Måneder": false,
-                "periodeFraOgMed": "2020-01-01",
-                "periodeTilOgMed": "2020-10-01"
+              "antallDagerBruktEtter1Juli": 1,
+              "mottakerNavn": "Kari Nordmann",
+              "mottakerFnr": "12345678910",
+              "barn": [
+                {
+                  "identitetsnummer": "10987654321",
+                  "navn": "Doffen Nordmann",
+                  "fødselsdato": "2010-01-01",
+                  "aktørId": "654321",
+                  "aleneOmOmsorgen": true,
+                  "utvidetRett": true
+                }
+              ],
+              "fordeling": {
+                "mottakerType": "SAMVÆRSFORELDER",
+                "samværsavtale": ["http://localhost:8080/vedlegg/1"]
               },
-              "antallBarn": 2,
-              "fødselsårBarn": [
-                2005,
-                2013
-              ],
-              "medlemskap": {
-                "harBoddIUtlandetSiste12Mnd": true,
-                "utenlandsoppholdSiste12Mnd": [
-                  {
-                    "fraOgMed": "2020-01-01",
-                    "tilOgMed": "2020-01-10",
-                    "landkode": "DE",
-                    "landnavn": "Tyskland"
-                  },
-                  {
-                    "fraOgMed": "2020-01-01",
-                    "tilOgMed": "2020-01-10",
-                    "landkode": "SWE",
-                    "landnavn": "Sverige"
-                  }
-                ],
-                "skalBoIUtlandetNeste12Mnd": true,
-                "utenlandsoppholdNeste12Mnd": [
-                  {
-                    "fraOgMed": "2020-10-01",
-                    "tilOgMed": "2020-10-10",
-                    "landkode": "BR",
-                    "landnavn": "Brasil"
-                  }
-                ]
+              "korona": {
+                 "antallDagerSomSkalOverføres": 15
+              },
+              "overføring": {
+                 "mottakerType": "EKTEFELLE",
+                 "antallDagerSomSkalOverføres": 15
               },
               "harForståttRettigheterOgPlikter": true,
               "harBekreftetOpplysninger": true

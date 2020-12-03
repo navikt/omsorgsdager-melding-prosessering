@@ -9,18 +9,18 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
-import no.nav.helse.prosessering.v1.melding.Melding
-import no.nav.helse.prosessering.v1.melding.Søker
+import no.nav.helse.prosessering.v1.melding.*
 import no.nav.helse.prosessering.v1.melding.somMapTilPdfArbeidssituasjon
-import no.nav.helse.prosessering.v1.melding.somMapTilPdfFødselsår
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
+import java.util.logging.Level
 
 internal class PdfV1Generator {
     private companion object {
@@ -77,26 +77,59 @@ internal class PdfV1Generator {
     }
 
     internal fun generateSoknadOppsummeringPdf(melding: Melding): ByteArray {
-        XRLog.setLoggingEnabled(false) //TODO Finnes det en måte å kun justere logg level, ikke skru den helt av?
+        XRLog.listRegisteredLoggers().forEach { logger -> XRLog.setLevel(logger, Level.WARNING) }
+        //XRLog.setLoggingEnabled(false) //TODO Finnes det en måte å kun justere logg level, ikke skru den helt av?
         soknadTemplate.apply(
             Context
                 .newBuilder(
                     mapOf(
-                        "søknadId" to melding.søknadId,
-                        "søknadMottattDag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
-                        "søknadMottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
-                        "søker" to mapOf(
-                            "navn" to melding.søker.formatertNavn(),
-                            "fødselsnummer" to melding.søker.fødselsnummer
+                        "felles" to mapOf(
+                            "id" to melding.id,
+                            "søknadId" to melding.søknadId,
+                            "søknadstypeTittel" to melding.type.somTittel(),
+                            "søknadMottattDag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
+                            "søknadMottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
+                            "søker" to mapOf(
+                                "navn" to melding.søker.formatertNavn(),
+                                "fødselsnummer" to melding.søker.fødselsnummer
+                            ),
+                            "situasjon" to mapOf(
+                                "harAleneomsorg" to melding.harAleneomsorg,
+                                "harUtvidetRett" to melding.harUtvidetRett,
+                                "erYrkesaktiv" to melding.erYrkesaktiv,
+                                "arbeiderINorge" to melding.arbeiderINorge,
+                                "arbeidssituasjon" to melding.arbeidssituasjon.somMapTilPdfArbeidssituasjon(),
+                                "antallDagerBruktEtter1Juli" to melding.antallDagerBruktEtter1Juli
+                            ),
+                            "barn" to melding.barn.somMap(),
+                            "mottaker" to mapOf(
+                                "fnr" to melding.mottakerFnr,
+                                "navn" to melding.mottakerNavn
+                            ),
+                            "samtykke" to mapOf(
+                                "harForståttRettigheterOgPlikter" to melding.harForståttRettigheterOgPlikter,
+                                "harBekreftetOpplysninger" to melding.harBekreftetOpplysninger
+                            )
                         ),
-                        "id" to melding.id,
-                        "arbeidssituasjon" to melding.arbeidssituasjon.somMapTilPdfArbeidssituasjon(),
-                        "samtykke" to mapOf(
-                            "harForståttRettigheterOgPlikter" to melding.harForståttRettigheterOgPlikter,
-                            "harBekreftetOpplysninger" to melding.harBekreftetOpplysninger
-                        ),
+                        "korona" to melding.korona?.let {
+                            mapOf(
+                                "antallDagerSomSkalOverføres" to it.antallDagerSomSkalOverføres
+                            )
+                        },
+                        "overføring" to melding.overføring?.let {
+                            mapOf(
+                                "mottakerType" to it.mottakerType.type,
+                                "antallDagerSomSkalOverføres" to it.antallDagerSomSkalOverføres
+                            )
+                        },
+                        "fordeling" to melding.fordeling?.let {
+                            mapOf(
+                                "mottakerType" to it.mottakerType.type
+                            )
+                        },
                         "hjelp" to mapOf(
-                            "språk" to melding.språk?.språkTilTekst()
+                            "språk" to melding.språk.språkTilTekst(),
+                            "erDet2020Fortsatt" to åretEr2020()
                         )
                     )
                 )
@@ -118,6 +151,7 @@ internal class PdfV1Generator {
         }
     }
 
+    private fun åretEr2020() = (LocalDate.now().year == 2020)
 
 
     private fun PdfRendererBuilder.medFonter() =
@@ -144,6 +178,22 @@ internal class PdfV1Generator {
             )
 }
 
+private fun Meldingstype.somTittel(): String = when(this) {
+    Meldingstype.OVERFORING -> "Melding om overføring av omsorgsdager"
+    Meldingstype.FORDELING -> "Melding om fordeling av omsorgsdager"
+    Meldingstype.KORONA -> "Melding om overføring av omsorgsdager grunnet korona"
+}
+
+private fun List<Barn>.somMap(): List<Map<String, Any?>> = map {
+    mapOf(
+        "fnr" to it.identitetsnummer,
+        "navn" to it.navn,
+        "fødselsdato" to it.fødselsdato,
+        "aleneOmOmsorgen" to it.aleneOmOmsorgen,
+        "utvidetRett" to it.utvidetRett
+    )
+}
+
 private fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 
 private fun Boolean?.erSatt() = this != null
@@ -154,7 +204,7 @@ private fun String.språkTilTekst() = when (this.toLowerCase()) {
     else -> this
 }
 
-private fun ZonedDateTime.norskDag() = when(dayOfWeek) {
+private fun ZonedDateTime.norskDag() = when (dayOfWeek) {
     DayOfWeek.MONDAY -> "Mandag"
     DayOfWeek.TUESDAY -> "Tirsdag"
     DayOfWeek.WEDNESDAY -> "Onsdag"

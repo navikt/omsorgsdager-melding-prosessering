@@ -10,8 +10,6 @@ data class Melding(
     val id: String,
     val språk: String,
     val mottatt: ZonedDateTime,
-    val harForståttRettigheterOgPlikter: Boolean,
-    val harBekreftetOpplysninger: Boolean,
     val søker: Søker,
     val mottakerFnr: String,
     val mottakerNavn: String,
@@ -20,12 +18,14 @@ data class Melding(
     val erYrkesaktiv: Boolean,
     val arbeiderINorge: Boolean,
     val arbeidssituasjon: List<Arbeidssituasjon>,
-    val antallDagerBruktEtter1Juli: Int,
+    val antallDagerBruktEtter1Juli: Int? = null,
     val barn: List<Barn>,
     val type: Meldingstype,
     val korona: KoronaOverføringMelding? = null,
     val overføring: OverføringsMelding? = null,
-    val fordeling: FordelingsMelding? = null
+    val fordeling: FordelingsMelding? = null,
+    val harBekreftetOpplysninger: Boolean,
+    val harForståttRettigheterOgPlikter: Boolean
 )
 
 data class KoronaOverføringMelding(
@@ -49,7 +49,7 @@ enum class Meldingstype(val type: String) {
 }
 
 enum class MottakerType(val type: String) {
-    EKTEFELLE("ektefelle9"),
+    EKTEFELLE("ektefelle"),
     SAMBOER("samboer"),
     SAMVÆRSFORELDER("samværsforelder")
 }
