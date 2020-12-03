@@ -19,7 +19,7 @@ data class PreprossesertMelding(
     val erYrkesaktiv: Boolean,
     val arbeiderINorge: Boolean,
     val arbeidssituasjon: List<Arbeidssituasjon>,
-    val antallDagerBruktEtter1Juli: Int,
+    val antallDagerBruktEtter1Juli: Int? = null,
     val barn: List<Barn>,
     val type: Meldingstype,
     val korona: KoronaOverføringMelding? = null,

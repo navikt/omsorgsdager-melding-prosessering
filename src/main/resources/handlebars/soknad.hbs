@@ -2,132 +2,133 @@
 <html lang="NO">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Omsorgsdager - Søknad om å bli regnet som alene</title>
-    <meta name="subject" content="Omsorgsdager - Søknad om å bli regnet som alene" />
-    <meta name="author" content="nav.no" />
+    <meta charset="UTF-8"/>
+    <title>Omsorgsdager - {{felles.søknadstypeTittel}}</title>
+    <meta name="subject" content="Omsorgsdager - {{felles.søknadstypeTittel}}"/>
+    <meta name="author" content="nav.no"/>
     <meta name="description"
-          content="Omsorgsdager - Søknad om å bli regnet som alene {{søknadMottattDag}} {{ søknadMottatt }}" />
+          content="Omsorgsdager - {{felles.søknadstypeTittel}} {{felles.søknadMottattDag}} {{ felles.søknadMottatt }}"/>
     <bookmarks>
-        <bookmark name="Søker" href="#søker" />
-        <bookmark name="Din situasjon" href="#din_situasjon" />
-        <bookmark name="Den andre forelderen" href="#andre_forelderen" />
-        <bookmark name="Medlemskap" href="#medlemskap" />
-        <bookmark name="Samtykke" href="#samtykke" />
+        <bookmark name="Søker" href="#søker"/>
+        <bookmark name="Din situasjon" href="#din_situasjon"/>
+        <bookmark name="Dine barn" href="#dine_barn"/>
+        <bookmark name="Mottaker av omsorgsdagene" href="#mottaker"/>
+        <bookmark name="Samtykke" href="#samtykke"/>
     </bookmarks>
     {{#block 'style-common' }}
     {{/block}}
 </head>
 
 <body>
-    <h1 id="header">Omsorgsdager - Søknad om å bli regnet som alene</h1>
-    <div class="nokkelinfo">
-        <p><strong>Sendt til NAV</strong> {{søknadMottattDag}} {{ søknadMottatt }}</p>
-        <p><strong>Språk:</strong> {{hjelp.språk}}</p>
-    </div>
-    <div class="innholdscontainer">
+<h1 id="header">Omsorgsdager - {{felles.søknadstypeTittel}}</h1>
+<div class="nokkelinfo">
+    <p><strong>Sendt til NAV</strong> {{felles.søknadMottattDag}} {{ felles.søknadMottatt }}</p>
+    <p><strong>Språk:</strong> {{hjelp.språk}}</p>
+</div>
+<div class="innholdscontainer">
 
-        <div class="person" id="søker">
-            <p class="navn">{{ søker.navn }}</p>
-            <p>{{ søker.fødselsnummer }}</p>
-            <br />
-        </div>
-
-        <!-- DIN_SITUASJON-->
-        <section id="din_situasjon">
-            <h2>Din situasjon</h2>
-            <p class="sporsmalstekst">Hva er din arbeidssituasjon?</p>
-            <ul>
-                {{# each arbeidssituasjon as |situasjon|~}}
-                    <li>{{situasjon.utskriftvennlig}}</li>
-                {{/each}}
-            </ul>
-            <p class="sporsmalstekst">Hvor mange felles barn har dere? Inkludert eventuelle fosterbarn</p>
-            <p> {{antallBarn}}</p>
-            <p class="sporsmalstekst">Hva er fødselsåret på alle barna?</p>
-            <ul>
-                {{# each fødselsårBarn as |barn|~}}
-                    <li>{{barn.alder}}</li>
-                {{/each}}
-            </ul>
-        </section>
-
-        <!-- ANDRE_FORELDER -->
-        <section id="andre_forelderen">
-            <h2>Den andre forelderen</h2>
-            <p class="sporsmalstekst">Hva er navnet til den andre forelderen?</p>
-            <p>{{annenForelder.navn}}</p>
-            <p class="sporsmalstekst">Hva er fødselsnummeret til den andre forelderen?</p>
-            <p>{{annenForelder.fnr}}</p>
-            <p class="sporsmalstekst">Hva er grunnen til at den andre forelderen ikke kan ta seg av barn?</p>
-            <p>{{annenForelder.situasjon}}</p>
-            {{#if annenForelder.beskrivelse}}
-                <p class="sporsmalstekst">Beskrivelse av situasjonen:</p>
-                <p class="fritekst">{{annenForelder.beskrivelse}}</p>
-            {{/if}}
-            {{#if annenForelder.periodeFraOgMed}}
-                <p class="sporsmalstekst">Perioden den andre forelderen ikke kan ta seg av barn</p>
-                <p>{{annenForelder.periodeFraOgMed}} - {{annenForelder.periodeTilOgMed}}
-                 {{#if hjelp.erPeriodenOver6Måneder}}
-                     (over 6 måneder)
-                 {{else}}
-                     (ikke over 6 måneder)
-                 {{/if}}
-                </p>
-            {{/if}}
-            {{#if hjelp.periodeOver6MånederSatt}}
-                <p class="sporsmalstekst">Har perioden en varighet på minst 6 måneder?</p>
-                <p>{{ jaNeiSvar annenForelder.periodeOver6Måneder}}</p>
-            {{/if}}
-        </section>
-
-        <!-- Medlemskap -->
-        <section id="medlemskap">
-            <h2>Medlemskap i folketrygden</h2>
-            <p class="sporsmalstekst">Har du bodd i utlandet de siste 12 månedene?</p>
-            <p>{{ jaNeiSvar medlemskap.harBoddIUtlandetSiste12Mnd}}</p>
-            {{#if medlemskap.harBoddIUtlandetSiste12Mnd}}
-            <p class="sporsmalstekst">Utenlandsopphold de siste 12 månedene: </p>
-                <ul>
-                    {{# each medlemskap.utenlandsoppholdSiste12Mnd as |utenlandsopphold|~}}
-                        <li>
-                            {{utenlandsopphold.landnavn}} ({{utenlandsopphold.fraOgMed}} - {{utenlandsopphold.tilOgMed}})
-                        </li>
-                    {{/each}}
-                </ul>
-            {{/if}}
-            <p class="sporsmalstekst">Skal du bo i utlandet de neste 12 månedene?</p>
-            <p>{{ jaNeiSvar medlemskap.skalBoIUtlandetNeste12Mnd}}</p>
-            {{#if medlemskap.skalBoIUtlandetNeste12Mnd}}
-                <p class="sporsmalstekst">Utenlandsopphold de neste 12 månedene: </p>
-                <ul>
-                    {{# each medlemskap.utenlandsoppholdNeste12Mnd as |utenlandsopphold|~}}
-                        <li>
-                            {{utenlandsopphold.landnavn}} ({{utenlandsopphold.fraOgMed}} - {{utenlandsopphold.tilOgMed}})
-                        </li>
-                    {{/each}}
-                </ul>
-            {{/if}}
-        </section>
-
-        <!-- SAMTYKKE -->
-        <section id="samtykke">
-            <h2>Samtykke fra deg</h2>
-            <p class="sporsmalstekst">Har du forstått dine rettigheter og plikter?</p>
-            <p>{{ jaNeiSvar samtykke.harForståttRettigheterOgPlikter }}</p>
-            <hr />
-            <p class="sporsmalstekst">Har du bekreftet at opplysninger du har gitt er riktige?</p>
-            <p>{{ jaNeiSvar samtykke.harBekreftetOpplysninger }}</p>
-        </section>
-
+    <div class="person" id="søker">
+        <p class="navn">{{ felles.søker.navn }}</p>
+        <p>{{ felles.søker.fødselsnummer }}</p>
+        <br/>
     </div>
 
-    <!-- FOOTER -->
-    <p id="footer">
-        <span class="soknadsid">{{ søknadId }}</span>
-        <span class="soknadsid">{{ id }}</span>
-        <span class="sidetall">side <span id="pagenumber"></span> av <span id="pagecount"></span></span>
-    </p>
+    <!-- DIN_SITUASJON-->
+    <section id="din_situasjon">
+        <h2>Din situasjon</h2>
+        <p class="sporsmalstekst">Har du aleneomsorg for barna?</p>
+        <p>{{ jaNeiSvar felles.situasjon.harAleneomsorg }}</p>
+        <p class="sporsmalstekst">Har du utvidet rett med omsorgsdager?</p>
+        <p>{{ jaNeiSvar felles.situasjon.harUtvidetRett }}</p>
+        <p class="sporsmalstekst">Er du yrkesaktiv?</p>
+        <p>{{ jaNeiSvar felles.situasjon.erYrkesaktiv }}</p>
+        <p class="sporsmalstekst">Arbeider du i Norge?</p>
+        <p>{{ jaNeiSvar felles.situasjon.arbeiderINorge }}</p>
+
+        <p class="sporsmalstekst">Hva er din arbeidssituasjon?</p>
+        <ul>
+            {{# each felles.situasjon.arbeidssituasjon as |situasjon|~}}
+                <li>{{situasjon.utskriftvennlig}}</li>
+            {{/each}}
+        </ul>
+
+        {{#if felles.situasjon.antallDagerBruktEtter1Juli}}
+            {{#if hjelp.erDet2020Fortsatt}}
+                <p class="sporsmalstekst">Hvor mange omsorgsdager har du brukt etter 1. juli 2020?</p>
+            {{else}}
+                <p class="sporsmalstekst">Hvor mange omsorgsdager har du brukt i år?</p>
+            {{/if}}
+            <p>{{felles.situasjon.antallDagerBruktEtter1Juli}}</p>
+        {{/if}}
+    </section>
+
+    <!-- BARN -->
+    <section id="dine_barn">
+        <h2>Dine barn</h2>
+        {{#each felles.barn as | barn|~}}
+            <ul>
+                <li>
+                    <p><b>{{barn.navn}} (født {{barn.fødselsdato}}, fødselsnummer {{barn.fnr}})</b></p>
+                    {{#if barn.aleneOmOmsorgen}}
+                        <p>Du er alene om omsorgen for dette barnet.</p>
+                    {{/if}}
+                    {{#if barn.utvidetRett}}
+                        <p>Du har fått ekstra omsorgsdager fordi barnet har en kronisk sykdom eller
+                            funksjonshemning.</p>
+                    {{/if}}
+                </li>
+            </ul>
+        {{/each}}
+    </section>
+
+    <!-- Mottaker -->
+    <section id="mottaker">
+        <h2>Mottaker av omsorgsdagene</h2>
+        <p class="sporsmalstekst">Hva er navnet til mottaker?</p>
+        <p>{{felles.mottaker.navn}}</p>
+        <p class="sporsmalstekst">Hva er fødselsnummeret til {{felles.mottaker.navn}}?</p>
+        <p>{{felles.mottaker.fnr}}</p>
+
+        <!-- Koronaoverføring -->
+        {{#if korona}}
+            <p class="sporsmalstekst">Hvor mange omsorgsdager skal overføres til {{felles.mottaker.navn}}?</p>
+            <p>{{korona.antallDagerSomSkalOverføres}}</p>
+        {{/if}}
+
+        <!-- Omsorgsdageroveføring -->
+        {{#if overføring}}
+            <p class="sporsmalstekst">Hva er din relasjon til {{felles.mottaker.navn}}?</p>
+            <p>{{overføring.mottakerType}}</p>
+
+            <p class="sporsmalstekst">Hvor mange omsorgsdager skal overføres til {{felles.mottaker.navn}}?</p>
+            <p>{{overføring.antallDagerSomSkalOverføres}}</p>
+        {{/if}}
+
+        <!-- Omsorgsdagerfordeling -->
+        {{#if fordeling}}
+            <p class="sporsmalstekst">Hva er din relasjon til {{felles.mottaker.navn}}?</p>
+            <p>{{fordeling.mottakerType}}</p>
+        {{/if}}
+    </section>
+
+    <!-- SAMTYKKE -->
+    <section id="samtykke">
+        <h2>Samtykke fra deg</h2>
+        <p class="sporsmalstekst">Har du forstått dine rettigheter og plikter?</p>
+        <p>{{ jaNeiSvar felles.samtykke.harForståttRettigheterOgPlikter }}</p>
+        <hr/>
+        <p class="sporsmalstekst">Har du bekreftet at opplysninger du har gitt er riktige?</p>
+        <p>{{ jaNeiSvar felles.samtykke.harBekreftetOpplysninger }}</p>
+    </section>
+
+</div>
+
+<!-- FOOTER -->
+<p id="footer">
+    <span class="soknadsid">{{ felles.søknadId }}</span>
+    <span class="soknadsid">{{ felles.id }}</span>
+    <span class="sidetall">side <span id="pagenumber"></span> av <span id="pagecount"></span></span>
+</p>
 </body>
 
 </html>
