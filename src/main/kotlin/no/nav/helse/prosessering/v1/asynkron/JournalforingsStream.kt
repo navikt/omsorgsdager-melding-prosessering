@@ -61,19 +61,7 @@ internal class JournalforingsStream(
                                 )
                             )
 
-                            Meldingstype.FORDELING -> joarkGateway.journalførFordelingsmelding(
-                                mottatt = preprosessertMelding.mottatt,
-                                norskIdent = preprosessertMelding.søker.fødselsnummer,
-                                correlationId = CorrelationId(entry.metadata.correlationId),
-                                dokumenter = dokumenter,
-                                navn = Navn(
-                                    fornavn = preprosessertMelding.søker.fornavn,
-                                    mellomnavn = preprosessertMelding.søker.mellomnavn,
-                                    etternavn = preprosessertMelding.søker.etternavn
-                                )
-                            )
-
-                            Meldingstype.OVERFORING -> joarkGateway.journalførOverføringsmelding(
+                            Meldingstype.FORDELING, Meldingstype.OVERFORING -> joarkGateway.journalførDelingsMelding(
                                 mottatt = preprosessertMelding.mottatt,
                                 norskIdent = preprosessertMelding.søker.fødselsnummer,
                                 correlationId = CorrelationId(entry.metadata.correlationId),

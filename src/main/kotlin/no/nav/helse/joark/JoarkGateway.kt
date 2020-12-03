@@ -42,14 +42,9 @@ class JoarkGateway(
         pathParts = listOf("v1", "omsorgsdageroverforing", "journalforing")
     )
 
-    private val overføringsUrl = Url.buildURL(
+    private val omsorgsdagerDelingUrl = Url.buildURL(
         baseUrl = baseUrl,
         pathParts = listOf("v1", "omsorgsdagerdeling", "journalforing")
-    )
-
-    private val fordelingsUrl = Url.buildURL(
-        baseUrl = baseUrl,
-        pathParts = listOf("v1", "omsorgsdagerfordeling", "journalforing")
     )
 
     private val objectMapper = configuredObjectMapper()
@@ -81,7 +76,7 @@ class JoarkGateway(
         ).journalførMelding(koronaoverføringUrl, correlationId)
     }
 
-    suspend fun journalførFordelingsmelding(
+    suspend fun journalførDelingsMelding(
         norskIdent: String,
         mottatt: ZonedDateTime,
         navn: Navn,
@@ -93,22 +88,7 @@ class JoarkGateway(
             mottatt = mottatt,
             dokumenter = dokumenter,
             søkerNavn = navn
-        ).journalførMelding(fordelingsUrl, correlationId)
-    }
-
-    suspend fun journalførOverføringsmelding(
-        norskIdent: String,
-        mottatt: ZonedDateTime,
-        navn: Navn,
-        dokumenter: List<List<URI>>,
-        correlationId: CorrelationId
-    ): JournalPostId {
-        return JoarkRequest(
-            norskIdent = norskIdent,
-            mottatt = mottatt,
-            dokumenter = dokumenter,
-            søkerNavn = navn
-        ).journalførMelding(overføringsUrl, correlationId)
+        ).journalførMelding(omsorgsdagerDelingUrl, correlationId)
     }
 
     private suspend fun JoarkRequest.journalførMelding(url: URI, correlationId: CorrelationId): JournalPostId {
