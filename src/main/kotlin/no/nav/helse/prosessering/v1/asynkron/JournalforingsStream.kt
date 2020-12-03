@@ -8,6 +8,7 @@ import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
+import no.nav.helse.prosessering.v1.melding.Meldingstype
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
@@ -47,17 +48,43 @@ internal class JournalforingsStream(
                         val dokumenter = preprosessertMelding.dokumentUrls
                         logger.trace("Journalfører dokumenter: {}", dokumenter)
 
-                        val journalPostId = joarkGateway.journalfør(
-                            mottatt = preprosessertMelding.mottatt,
-                            norskIdent = preprosessertMelding.søker.fødselsnummer,
-                            correlationId = CorrelationId(entry.metadata.correlationId),
-                            dokumenter = dokumenter,
-                            navn = Navn(
-                                fornavn = preprosessertMelding.søker.fornavn,
-                                mellomnavn = preprosessertMelding.søker.mellomnavn,
-                                etternavn = preprosessertMelding.søker.etternavn
+                        val journalPostId = when(preprosessertMelding.type) {
+                            Meldingstype.KORONA -> joarkGateway.journalførKoronaOverføringsMelding(
+                                mottatt = preprosessertMelding.mottatt,
+                                norskIdent = preprosessertMelding.søker.fødselsnummer,
+                                correlationId = CorrelationId(entry.metadata.correlationId),
+                                dokumenter = dokumenter,
+                                navn = Navn(
+                                    fornavn = preprosessertMelding.søker.fornavn,
+                                    mellomnavn = preprosessertMelding.søker.mellomnavn,
+                                    etternavn = preprosessertMelding.søker.etternavn
+                                )
                             )
-                        )
+
+                            Meldingstype.FORDELING -> joarkGateway.journalførFordelingsmelding(
+                                mottatt = preprosessertMelding.mottatt,
+                                norskIdent = preprosessertMelding.søker.fødselsnummer,
+                                correlationId = CorrelationId(entry.metadata.correlationId),
+                                dokumenter = dokumenter,
+                                navn = Navn(
+                                    fornavn = preprosessertMelding.søker.fornavn,
+                                    mellomnavn = preprosessertMelding.søker.mellomnavn,
+                                    etternavn = preprosessertMelding.søker.etternavn
+                                )
+                            )
+
+                            Meldingstype.OVERFORING -> joarkGateway.journalførOverføringsmelding(
+                                mottatt = preprosessertMelding.mottatt,
+                                norskIdent = preprosessertMelding.søker.fødselsnummer,
+                                correlationId = CorrelationId(entry.metadata.correlationId),
+                                dokumenter = dokumenter,
+                                navn = Navn(
+                                    fornavn = preprosessertMelding.søker.fornavn,
+                                    mellomnavn = preprosessertMelding.søker.mellomnavn,
+                                    etternavn = preprosessertMelding.søker.etternavn
+                                )
+                            )
+                        }
 
                         logger.trace("Dokumenter journalført med ID = ${journalPostId.journalpostId}.")
                         val journalfort = Journalfort(journalpostId = journalPostId.journalpostId)

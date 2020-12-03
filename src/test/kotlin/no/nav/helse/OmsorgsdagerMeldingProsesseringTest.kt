@@ -35,8 +35,10 @@ class OmsorgsdagerMeldingProsesseringTest {
             .navnOppslagConfig()
             .build()
             .stubK9MellomlagringHealth()
-            .stubOmsorgspengerJoarkHealth()
-            .stubJournalfor()
+            .stubK9JoarkHealth()
+            .stubJournalfor(path = "v1/omsorgsdageroverforing/journalforing")
+            .stubJournalfor(path = "v1/omsorgsdagerdeling/journalforing")
+            .stubJournalfor(path = "v1/omsorgsdagerfordeling/journalforing")
             .stubLagreDokument()
             .stubSlettDokument()
 
@@ -120,13 +122,13 @@ class OmsorgsdagerMeldingProsesseringTest {
     fun `En feilprosessert søknad vil bli prosessert etter at tjenesten restartes`() {
         val søknad = SøknadUtils.gyldigSøknad().copy(id = "01ARZ3NDEKTSV4RRFFQ69G5FAA")
 
-        wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
+        wireMockServer.stubJournalfor(500, "v") // Simulerer feil ved journalføring
 
         kafkaTestProducer.leggTilMottak(søknad)
         ventPaaAtRetryMekanismeIStreamProsessering()
         readyGir200HealthGir503()
 
-        wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
+        wireMockServer.stubJournalfor(201, "v1/omsorgsdagerdeling/journalforing") // Simulerer journalføring fungerer igjen
         restartEngine()
         k9RapidKonsumer
             .hentK9RapidMelding(søknad.id)

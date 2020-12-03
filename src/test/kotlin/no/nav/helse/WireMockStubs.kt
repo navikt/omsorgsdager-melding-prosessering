@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import java.util.*
 
-private const val omsorgspengerJoarkBaseUrl = "/helse-reverse-proxy/omsorgspenger-joark-mock"
+private const val k9JoarkBaseUrl = "/helse-reverse-proxy/k9-joark-mock"
 private const val k9MellomlagringServiceDiscovery = "/k9-mellomlagring-mock"
 
 fun WireMockBuilder.navnOppslagConfig() = wireMockConfiguration {
@@ -34,9 +34,9 @@ internal fun WireMockServer.stubSlettDokument(): WireMockServer {
     return this
 }
 
-internal fun WireMockServer.stubJournalfor(responseCode: Int = 201): WireMockServer {
+internal fun WireMockServer.stubJournalfor(responseCode: Int = 201, path: String): WireMockServer {
     WireMock.stubFor(
-        WireMock.post(WireMock.urlPathMatching(".*$omsorgspengerJoarkBaseUrl.*")).willReturn(
+        WireMock.post(WireMock.urlPathMatching(".*$k9JoarkBaseUrl/$path.*")).willReturn(
             WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(
@@ -65,7 +65,7 @@ private fun WireMockServer.stubHealthEndpoint(
 }
 
 internal fun WireMockServer.stubK9MellomlagringHealth() = stubHealthEndpoint("$k9MellomlagringServiceDiscovery/health")
-internal fun WireMockServer.stubOmsorgspengerJoarkHealth() = stubHealthEndpoint("$omsorgspengerJoarkBaseUrl/health")
+internal fun WireMockServer.stubK9JoarkHealth() = stubHealthEndpoint("$k9JoarkBaseUrl/health")
 
-internal fun WireMockServer.getOmsorgspengerJoarkBaseUrl() = baseUrl() + omsorgspengerJoarkBaseUrl
+internal fun WireMockServer.getK9JoarkBaseUrl() = baseUrl() + k9JoarkBaseUrl
 internal fun WireMockServer.getK9MellomlagringServiceDiscovery() = baseUrl() + k9MellomlagringServiceDiscovery

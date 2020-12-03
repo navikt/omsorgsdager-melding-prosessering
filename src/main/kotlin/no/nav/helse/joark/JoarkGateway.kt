@@ -37,10 +37,20 @@ class JoarkGateway(
         private val logger: Logger = LoggerFactory.getLogger(JoarkGateway::class.java)
     }
 
-    private val completeUrl = Url.buildURL(
+    private val koronaoverføringUrl = Url.buildURL(
         baseUrl = baseUrl,
-        pathParts = listOf("v1", "omsorgspenger", "midlertidig-alene","journalforing")
-    ).toString()
+        pathParts = listOf("v1", "omsorgsdageroverforing", "journalforing")
+    )
+
+    private val overføringsUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "omsorgsdagerdeling", "journalforing")
+    )
+
+    private val fordelingsUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "omsorgsdagerfordeling", "journalforing")
+    )
 
     private val objectMapper = configuredObjectMapper()
     private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
@@ -56,26 +66,58 @@ class JoarkGateway(
         }
     }
 
-    suspend fun journalfør(
+    suspend fun journalførKoronaOverføringsMelding(
         norskIdent: String,
         mottatt: ZonedDateTime,
         navn: Navn,
         dokumenter: List<List<URI>>,
         correlationId: CorrelationId
     ): JournalPostId {
-
-        val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
-
-        val joarkRequest = JoarkRequest(
+        return JoarkRequest(
             norskIdent = norskIdent,
             mottatt = mottatt,
             dokumenter = dokumenter,
             søkerNavn = navn
-        )
+        ).journalførMelding(koronaoverføringUrl, correlationId)
+    }
 
-        val body = objectMapper.writeValueAsBytes(joarkRequest)
+    suspend fun journalførFordelingsmelding(
+        norskIdent: String,
+        mottatt: ZonedDateTime,
+        navn: Navn,
+        dokumenter: List<List<URI>>,
+        correlationId: CorrelationId
+    ): JournalPostId {
+        return JoarkRequest(
+            norskIdent = norskIdent,
+            mottatt = mottatt,
+            dokumenter = dokumenter,
+            søkerNavn = navn
+        ).journalførMelding(fordelingsUrl, correlationId)
+    }
+
+    suspend fun journalførOverføringsmelding(
+        norskIdent: String,
+        mottatt: ZonedDateTime,
+        navn: Navn,
+        dokumenter: List<List<URI>>,
+        correlationId: CorrelationId
+    ): JournalPostId {
+        return JoarkRequest(
+            norskIdent = norskIdent,
+            mottatt = mottatt,
+            dokumenter = dokumenter,
+            søkerNavn = navn
+        ).journalførMelding(overføringsUrl, correlationId)
+    }
+
+    private suspend fun JoarkRequest.journalførMelding(url: URI, correlationId: CorrelationId): JournalPostId {
+        val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
+
+        val body = objectMapper.writeValueAsBytes(this)
         val contentStream = { ByteArrayInputStream(body) }
-        val httpRequest = completeUrl
+        val httpRequest = url
+            .toString()
             .httpPost()
             .body(contentStream)
             .header(

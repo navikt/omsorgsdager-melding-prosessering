@@ -11,12 +11,12 @@ object TestConfiguration {
         wireMockServer: WireMockServer? = null,
         kafkaEnvironment: KafkaEnvironment? = null,
         port : Int = 8080,
-        omsorgspengerJoarkBaseUrl : String? = wireMockServer?.getOmsorgspengerJoarkBaseUrl(),
+        k9JoarkBaseUrl : String? = wireMockServer?.getK9JoarkBaseUrl(),
         k9MellomlagringServiceDiscovery : String? = wireMockServer?.getK9MellomlagringServiceDiscovery()
     ) : Map<String, String>{
         val map = mutableMapOf(
             Pair("ktor.deployment.port","$port"),
-            Pair("nav.gateways.k9_joark_url","$omsorgspengerJoarkBaseUrl"),
+            Pair("nav.gateways.k9_joark_url","$k9JoarkBaseUrl"),
             Pair("nav.gateways.k9_mellomlagring_service_discovery","$k9MellomlagringServiceDiscovery"),
             Pair("nav.authorization.api_gateway.api_key", "verysecret")
         )
@@ -29,7 +29,7 @@ object TestConfiguration {
             map["nav.auth.clients.1.discovery_endpoint"] = wireMockServer.getAzureV2WellKnownUrl()
             map["nav.auth.scopes.lagre-dokument"] = "k9-mellomlagring/.default"
             map["nav.auth.scopes.slette-dokument"] = "k9-mellomlagring/.default"
-            map["nav.auth.scopes.journalfore"] = "omsorgspenger-joark/.default"
+            map["nav.auth.scopes.journalfore"] = "k9-joark/.default"
         }
 
         kafkaEnvironment?.let {
