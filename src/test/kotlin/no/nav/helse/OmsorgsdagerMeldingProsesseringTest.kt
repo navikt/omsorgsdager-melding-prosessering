@@ -112,7 +112,9 @@ class OmsorgsdagerMeldingProsesseringTest {
 
     @Test
     fun `Gylding søknad blir prosessert av journalføringskonsumer`() {
-        val søknad = SøknadUtils.gyldigSøknad()
+        val søknad = SøknadUtils.gyldigSøknad(
+            id = "01ERQ023JVT5BEVSH8R0G04DXN"
+        )
 
         kafkaTestProducer.leggTilMottak(søknad)
         k9RapidKonsumer
@@ -122,7 +124,9 @@ class OmsorgsdagerMeldingProsesseringTest {
 
     @Test
     fun `En feilprosessert søknad vil bli prosessert etter at tjenesten restartes`() {
-        val søknad = SøknadUtils.gyldigSøknad().copy(id = "01ARZ3NDEKTSV4RRFFQ69G5FAA")
+        val søknad = SøknadUtils.gyldigSøknad(
+            id = "01ERQ049W5H5A27ZA367N5BQ3P"
+        )
 
         wireMockServer.stubJournalfor(500, "v") // Simulerer feil ved journalføring
 
@@ -130,7 +134,10 @@ class OmsorgsdagerMeldingProsesseringTest {
         ventPaaAtRetryMekanismeIStreamProsessering()
         readyGir200HealthGir503()
 
-        wireMockServer.stubJournalfor(201, "v1/omsorgsdagerdeling/journalforing") // Simulerer journalføring fungerer igjen
+        wireMockServer.stubJournalfor(
+            201,
+            "v1/omsorgsdagerdeling/journalforing"
+        ) // Simulerer journalføring fungerer igjen
         restartEngine()
         k9RapidKonsumer
             .hentK9RapidMelding(søknad.id)
@@ -140,7 +147,10 @@ class OmsorgsdagerMeldingProsesseringTest {
 
     @Test
     fun `Sende søknad hvor søker har D-nummer`() {
-        val søknad = SøknadUtils.gyldigSøknad(søkerFødselsnummer = dNummerA)
+        val søknad = SøknadUtils.gyldigSøknad(
+            id = "01ERQ05R3MJ7XAFH3RA0YQEQP4",
+            søkerFødselsnummer = dNummerA
+        )
 
         kafkaTestProducer.leggTilMottak(søknad)
         k9RapidKonsumer
@@ -164,11 +174,12 @@ class OmsorgsdagerMeldingProsesseringTest {
     @Test
     fun `Gyldig melding om deling av omsorgsdager blir prosessert av journalføringkonsumer`() {
         val søknad = SøknadUtils.gyldigSøknad(
+            id = "01ERQ05R3MJ7XAFH3RA0YQEQP4",
             søkerFødselsnummer = gyldigFodselsnummerA
         )
 
         kafkaTestProducer.leggTilMottak(søknad)
-            k9RapidKonsumer
+        k9RapidKonsumer
             .hentK9RapidMelding(søknad.id)
             .assertK9RapidFormat(søknad.id)
 
@@ -179,7 +190,7 @@ class OmsorgsdagerMeldingProsesseringTest {
         println(rawJson)
 
         assertEquals(rawJson.getJSONArray("@behovsrekkefølge").getString(0), "OverføreOmsorgsdager")
-        assertEquals(rawJson.getString("@type"),"Behovssekvens")
+        assertEquals(rawJson.getString("@type"), "Behovssekvens")
         assertEquals(rawJson.getString("@id"), id)
 
         assertNotNull(rawJson.getString("@correlationId"))
