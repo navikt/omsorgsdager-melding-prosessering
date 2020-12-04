@@ -18,7 +18,7 @@ object SøknadUtils {
         søker = Søker(
             aktørId = "123456",
             fødselsnummer = søkerFødselsnummer,
-            fødselsdato = LocalDate.now().minusDays(1000),
+            fødselsdato = LocalDate.parse("2018-03-10"),
             etternavn = "Nordmann",
             mellomnavn = "Mellomnavn",
             fornavn = "Ola"
