@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.melding
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.net.URL
 import java.time.LocalDate
@@ -43,7 +44,7 @@ data class OverføringsMelding(
 )
 
 enum class Meldingstype(val type: String) {
-    KORONA("COVID-19"),
+    @JsonAlias("KORONA_OVERFØRE")KORONA("COVID-19"),
     OVERFORING("Overføring"),
     FORDELING("Fordeling")
 }
