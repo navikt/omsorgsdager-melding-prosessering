@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
+import no.nav.helse.k9.assertK9RapidFormat
 import org.json.JSONObject
 import org.junit.AfterClass
 import org.slf4j.Logger
@@ -38,7 +39,6 @@ class OmsorgsdagerMeldingProsesseringTest {
             .stubK9JoarkHealth()
             .stubJournalfor(path = "v1/omsorgsdageroverforing/journalforing")
             .stubJournalfor(path = "v1/omsorgsdagerdeling/journalforing")
-            .stubJournalfor(path = "v1/omsorgsdagerfordeling/journalforing")
             .stubLagreDokument()
             .stubSlettDokument()
 
@@ -48,6 +48,8 @@ class OmsorgsdagerMeldingProsesseringTest {
         private val k9RapidKonsumer = kafkaEnvironment.k9RapidKonsumer()
 
         private val dNummerA = "55125314561"
+        private val gyldigFodselsnummerA = "02119970078"
+        private val gyldigFodselsnummerB = "19066672169"
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)
@@ -159,11 +161,24 @@ class OmsorgsdagerMeldingProsesseringTest {
         }
     }
 
+    @Test
+    fun `Gyldig melding om deling av omsorgsdager blir prosessert av journalføringkonsumer`() {
+        val søknad = SøknadUtils.gyldigSøknad(
+            søkerFødselsnummer = gyldigFodselsnummerA
+        )
+
+        kafkaTestProducer.leggTilMottak(søknad)
+            k9RapidKonsumer
+            .hentK9RapidMelding(søknad.id)
+            .assertK9RapidFormat(søknad.id)
+
+    }
+
     private infix fun String.validerK9RapidFormat(id: String) {
         val rawJson = JSONObject(this)
         println(rawJson)
 
-        assertEquals(rawJson.getJSONArray("@behovsrekkefølge").getString(0), "MidlertidigAlene")
+        assertEquals(rawJson.getJSONArray("@behovsrekkefølge").getString(0), "OverføreOmsorgsdager")
         assertEquals(rawJson.getString("@type"),"Behovssekvens")
         assertEquals(rawJson.getString("@id"), id)
 

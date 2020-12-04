@@ -8,11 +8,15 @@ import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.k9.rapid.behov.Behovssekvens
-import no.nav.k9.rapid.behov.MidlertidigAleneBehov
+import no.nav.helse.prosessering.v1.melding.Barn
+import no.nav.helse.prosessering.v1.melding.Meldingstype
+import no.nav.helse.prosessering.v1.melding.MottakerType
+import no.nav.k9.rapid.behov.*
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
+import java.lang.IllegalStateException
+import java.time.LocalDate
 
 internal class CleanupStream(
     kafkaConfig: KafkaConfig,
@@ -40,7 +44,7 @@ internal class CleanupStream(
             builder
                 .stream(fraCleanup.name, fraCleanup.consumed)
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .selectKey{ _, value ->
+                .selectKey { _, value ->
                     value.deserialiserTilCleanup().melding.id
                 }
                 .mapValues { soknadId, entry ->
@@ -61,7 +65,12 @@ internal class CleanupStream(
                         val behovssekvens = cleanupMelding.tilK9Behovssekvens()
                         val (id, løsning) = behovssekvens.keyValue
 
-                        logger.info(formaterStatuslogging(cleanupMelding.melding.søknadId, "har behovssekvensID $id og sendes videre til topic ${tilK9Rapid.name}"))
+                        logger.info(
+                            formaterStatuslogging(
+                                cleanupMelding.melding.søknadId,
+                                "har behovssekvensID $id og sendes videre til topic ${tilK9Rapid.name}"
+                            )
+                        )
 
                         Data(løsning)
                     }
@@ -74,25 +83,106 @@ internal class CleanupStream(
     internal fun stop() = stream.stop(becauseOfError = false)
 }
 
-internal fun Cleanup.tilK9Behovssekvens() : Behovssekvens{
-    val melding = this.melding
+internal fun Cleanup.tilK9Behovssekvens(): Behovssekvens = let {
+    val correlationId = metadata.correlationId
+    val journalPostIdListe = listOf(journalførtMelding.journalpostId)
 
-    val correlationId = this.metadata.correlationId
-    val journalPostIdListe = listOf(this.journalførtMelding.journalpostId)
-    val søker = MidlertidigAleneBehov.Person(identitetsnummer = melding.søker.fødselsnummer)
+    val behov: Behov = when (melding.type) {
+        Meldingstype.OVERFORING -> {
+            val overføring = melding.overføring!!
+            val mottakerType = overføring.mottakerType
+            OverføreOmsorgsdagerBehov(
+                kilde = OverføreOmsorgsdagerBehov.Kilde.Digital,
+                mottatt = melding.mottatt,
+                omsorgsdagerTattUtIÅr = melding.antalllDagerBruktIÅr ?: 0,
+                omsorgsdagerÅOverføre = overføring.antallDagerSomSkalOverføres,
+                barn = melding.barn.map { it.tilOverføreOmsorgsdagerBehovBarn() },
+                journalpostIder = journalPostIdListe,
+                fra = OverføreOmsorgsdagerBehov.OverførerFra(
+                    identitetsnummer = melding.søker.fødselsnummer,
+                    jobberINorge = melding.arbeiderINorge
+                ),
+                til = OverføreOmsorgsdagerBehov.OverførerTil(
+                    identitetsnummer = melding.mottakerFnr,
+                    relasjon = mottakerType.tilOverføreOmsorgsdagerBehovRelasjon(),
+                    harBoddSammenMinstEttÅr = mottakerType.let {
+                        if (it == MottakerType.SAMBOER) true else null
+                    }
+                )
+            )
+        }
 
-    val behov = MidlertidigAleneBehov(
-        søker = søker,
-        annenForelder = MidlertidigAleneBehov.Person(søker.identitetsnummer),
-        mottatt = melding.mottatt,
-        journalpostIder = journalPostIdListe
-    )
+        Meldingstype.FORDELING -> {
+            FordeleOmsorgsdagerBehov(
+                mottatt = melding.mottatt,
+                fra = FordeleOmsorgsdagerBehov.Fra(
+                    identitetsnummer = melding.søker.fødselsnummer
+                ),
+                til = FordeleOmsorgsdagerBehov.Til(
+                    identitetsnummer = melding.mottakerFnr
+                ),
+                barn = melding.barn.map { it.somFordeleOmsorgsdagerBehovBarn() },
+                journalpostIder = journalPostIdListe
+            )
+        }
 
-    return Behovssekvens(
+        Meldingstype.KORONA -> {
+            val korona = melding.korona!!
+            OverføreKoronaOmsorgsdagerBehov(
+                fra = OverføreKoronaOmsorgsdagerBehov.OverførerFra(
+                    identitetsnummer = melding.søker.fødselsnummer,
+                    jobberINorge = melding.arbeiderINorge
+                ),
+                til = OverføreKoronaOmsorgsdagerBehov.OverførerTil(
+                    identitetsnummer = melding.mottakerFnr
+                ),
+                omsorgsdagerTattUtIÅr = melding.antalllDagerBruktIÅr ?: 0,
+                omsorgsdagerÅOverføre = korona.antallDagerSomSkalOverføres,
+                barn = melding.barn.map { it.somOverføreKoronaOmsorgsdagerBehovBarn() },
+                periode = OverføreKoronaOmsorgsdagerBehov.Periode(
+                    // TODO: Periodeinfo må sendes med fra frontend
+                    fraOgMed = LocalDate.now().minusDays(3),
+                    tilOgMed = LocalDate.now()
+                ),
+                journalpostIder = journalPostIdListe,
+                mottatt = melding.mottatt
+            )
+        }
+    }
+
+    Behovssekvens(
         id = melding.id,
         correlationId = correlationId,
         behov = *arrayOf(
             behov
         )
+    )
+}
+
+private fun Barn.somOverføreKoronaOmsorgsdagerBehovBarn(): OverføreKoronaOmsorgsdagerBehov.Barn =
+    OverføreKoronaOmsorgsdagerBehov.Barn(
+        identitetsnummer = identitetsnummer,
+        fødselsdato = fødselsdato,
+        utvidetRett = utvidetRett,
+        aleneOmOmsorgen = aleneOmOmsorgen
+    )
+
+private fun Barn.somFordeleOmsorgsdagerBehovBarn(): FordeleOmsorgsdagerBehov.Barn = FordeleOmsorgsdagerBehov.Barn(
+    identitetsnummer = identitetsnummer,
+    fødselsdato = fødselsdato
+)
+
+private fun MottakerType.tilOverføreOmsorgsdagerBehovRelasjon(): OverføreOmsorgsdagerBehov.Relasjon = when (this) {
+    MottakerType.EKTEFELLE -> OverføreOmsorgsdagerBehov.Relasjon.NåværendeEktefelle
+    MottakerType.SAMBOER -> OverføreOmsorgsdagerBehov.Relasjon.NåværendeSamboer
+    else -> throw IllegalStateException("$this er ikke et gyldig relasjon for OverføreOmsorgsdagerBehov.")
+}
+
+internal fun Barn.tilOverføreOmsorgsdagerBehovBarn(): OverføreOmsorgsdagerBehov.Barn {
+    return OverføreOmsorgsdagerBehov.Barn(
+        identitetsnummer = this.identitetsnummer,
+        fødselsdato = this.fødselsdato,
+        aleneOmOmsorgen = this.aleneOmOmsorgen,
+        utvidetRett = this.utvidetRett
     )
 }

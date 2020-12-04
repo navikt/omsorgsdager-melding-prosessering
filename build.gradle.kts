@@ -3,7 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val dusseldorfKtorVersion = "1.4.1.4754df6"
 val k9RapidBehovVersion = "1.91b665d"
-val k9RapidMidlertidigAleneVersion = "1.91b665d"
+val k9RapidOverføreOmsorgsdagerVersion = "1.6d743f4"
+val k9RapidFordeleOmsorgsdagerVersion = "1.3265f25"
+val k9RapidOverføreKoronaOmsorgsdagerVersion = "1.3265f25"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
@@ -60,7 +62,9 @@ dependencies {
 
     //K9-Rapid
     implementation("no.nav.k9.rapid:behov:$k9RapidBehovVersion")
-    implementation("no.nav.k9.rapid:midlertidig-alene:$k9RapidMidlertidigAleneVersion")
+    implementation("no.nav.k9.rapid:overfore-omsorgsdager:$k9RapidOverføreOmsorgsdagerVersion")
+    implementation("no.nav.k9.rapid:fordele-omsorgsdager:$k9RapidFordeleOmsorgsdagerVersion")
+    implementation("no.nav.k9.rapid:overfore-korona-omsorgsdager:$k9RapidOverføreKoronaOmsorgsdagerVersion")
 
 }
 

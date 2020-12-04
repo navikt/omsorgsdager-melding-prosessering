@@ -57,10 +57,10 @@ enum class MottakerType(val type: String) {
 data class Barn(
     val identitetsnummer: String,
     val navn: String,
-    @JsonFormat(pattern = "yyyy-MM-dd") val fødselsdato: LocalDate?,
+    @JsonFormat(pattern = "yyyy-MM-dd") val fødselsdato: LocalDate,
     val aktørId: String,
-    val aleneOmOmsorgen: Boolean? = null,
-    val utvidetRett: Boolean? = null
+    val aleneOmOmsorgen: Boolean,
+    val utvidetRett: Boolean
 )
 
 data class Søker(
