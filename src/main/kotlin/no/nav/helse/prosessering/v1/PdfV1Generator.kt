@@ -18,7 +18,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.logging.Level
 
@@ -99,7 +98,7 @@ internal class PdfV1Generator {
                                 "erYrkesaktiv" to melding.erYrkesaktiv,
                                 "arbeiderINorge" to melding.arbeiderINorge,
                                 "arbeidssituasjon" to melding.arbeidssituasjon.somMapTilPdfArbeidssituasjon(),
-                                "antallDagerBruktEtter1Juli" to melding.antallDagerBruktEtter1Juli
+                                "antalllDagerBruktIÅr" to melding.antalllDagerBruktIÅr
                             ),
                             "barn" to melding.barn.somMap(),
                             "mottaker" to mapOf(

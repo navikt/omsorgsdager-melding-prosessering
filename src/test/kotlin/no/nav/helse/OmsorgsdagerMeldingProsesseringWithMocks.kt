@@ -22,8 +22,10 @@ class OmsorgsdagerMeldingProsesseringWithMocks {
                 .navnOppslagConfig()
                 .build()
                 .stubK9MellomlagringHealth()
-                .stubOmsorgspengerJoarkHealth()
-                .stubJournalfor()
+                .stubK9JoarkHealth()
+                .stubJournalfor(path = "v1/omsorgsdageroverforing/journalforing")
+                .stubJournalfor(path = "v1/omsorgsdagerdeling/journalforing")
+                .stubJournalfor(path = "v1/omsorgsdagerfordeling/journalforing")
                 .stubLagreDokument()
                 .stubSlettDokument()
 

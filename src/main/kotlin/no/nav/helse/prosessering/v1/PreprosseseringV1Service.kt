@@ -7,6 +7,7 @@ import no.nav.helse.felles.CorrelationId
 import no.nav.helse.felles.Metadata
 import no.nav.helse.felles.SøknadId
 import no.nav.helse.prosessering.v1.melding.Melding
+import no.nav.helse.prosessering.v1.melding.Meldingstype
 import no.nav.helse.prosessering.v1.melding.PreprossesertMelding
 import org.slf4j.LoggerFactory
 
@@ -39,7 +40,11 @@ internal class PreprosseseringV1Service(
             pdf = søknadOppsummeringPdf,
             correlationId = correlationId,
             dokumentEier = dokumentEier,
-            dokumentbeskrivelse = "Omsorgsdager - Søknad om å bli regnet som alene"
+            dokumentbeskrivelse = when(melding.type) {
+                Meldingstype.OVERFORING -> "Melding om deling av omsorgsdager"
+                Meldingstype.FORDELING -> "Melding om fordeling av omsorgsdager"
+                Meldingstype.KORONA -> "Melding om overføring av omsorgsdager"
+            }
         )
 
         logger.trace("Mellomlagring av Oppsummerings-PDF OK")

@@ -18,7 +18,7 @@ data class Melding(
     val erYrkesaktiv: Boolean,
     val arbeiderINorge: Boolean,
     val arbeidssituasjon: List<Arbeidssituasjon>,
-    val antallDagerBruktEtter1Juli: Int? = null,
+    val antalllDagerBruktIÅr: Int? = null,
     val barn: List<Barn>,
     val type: Meldingstype,
     val korona: KoronaOverføringMelding? = null,

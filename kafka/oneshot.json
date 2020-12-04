@@ -7,7 +7,7 @@
       },
       "members": [
         {
-          "member": "srv-oms-alene-mtk",
+          "member": "srv-omd-melding-mtk",
           "role": "PRODUCER"
         },
         {

@@ -37,7 +37,7 @@ class SøknadsformatTest {
                 "fornavn": "Ola",
                 "mellomnavn": "Mellomnavn",
                 "etternavn": "Nordmann",
-                "fødselsdato": "2018-03-09",
+                "fødselsdato": "2018-03-10",
                 "aktørId": "123456"
               },
               "arbeiderINorge": true,
@@ -47,7 +47,7 @@ class SøknadsformatTest {
               "arbeidssituasjon": [
                 "FRILANSER"
               ],
-              "antallDagerBruktEtter1Juli": 1,
+              "antalllDagerBruktIÅr": 1,
               "mottakerNavn": "Kari Nordmann",
               "mottakerFnr": "12345678910",
               "barn": [

@@ -85,7 +85,7 @@ class K9BehovssekvensTest {
                 arbeidssituasjon = listOf(Arbeidssituasjon.FRILANSER),
                 harBekreftetOpplysninger = true,
                 harForståttRettigheterOgPlikter = true,
-                antallDagerBruktEtter1Juli = 1,
+                antalllDagerBruktIÅr = 1,
                 arbeiderINorge = true,
                 erYrkesaktiv = true,
                 harAleneomsorg = true,
