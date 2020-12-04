@@ -47,7 +47,7 @@ class SøknadsformatTest {
               "arbeidssituasjon": [
                 "FRILANSER"
               ],
-              "antallDagerBruktEtter1Juli": 1,
+              "antalllDagerBruktIÅr": 1,
               "mottakerNavn": "Kari Nordmann",
               "mottakerFnr": "12345678910",
               "barn": [
