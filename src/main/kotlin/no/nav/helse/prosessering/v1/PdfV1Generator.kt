@@ -123,7 +123,8 @@ internal class PdfV1Generator {
                         },
                         "fordeling" to melding.fordeling?.let {
                             mapOf(
-                                "mottakerType" to it.mottakerType.type
+                                "mottakerType" to it.mottakerType.type,
+                                "ettersenderSamværsavtale" to melding.fordeling.samværsavtale.isEmpty()
                             )
                         },
                         "hjelp" to mapOf(

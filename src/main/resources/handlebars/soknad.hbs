@@ -13,6 +13,9 @@
         <bookmark name="Din situasjon" href="#din_situasjon"/>
         <bookmark name="Dine barn" href="#dine_barn"/>
         <bookmark name="Mottaker av omsorgsdagene" href="#mottaker"/>
+        {{#if fordeling.ettersenderSamværsavtale}}
+            <bookmark name="Samværsavtale" href="#samværsavtale"/>
+        {{/if}}
         <bookmark name="Samtykke" href="#samtykke"/>
     </bookmarks>
     {{#block 'style-common' }}
@@ -108,6 +111,13 @@
         {{#if fordeling}}
             <p class="sporsmalstekst">Hva er din relasjon til {{felles.mottaker.navn}}?</p>
             <p>{{fordeling.mottakerType}}</p>
+
+            <br/>
+            <br/>
+            <sectioln id ="samværsavtale">{{#if fordeling.ettersenderSamværsavtale}}
+                <h2>Samværsavtale</h2>
+                <p>Ingen vedlegg er lastet opp. Må ettersendes.</p>
+            {{/if}}</sectioln>
         {{/if}}
     </section>
 
