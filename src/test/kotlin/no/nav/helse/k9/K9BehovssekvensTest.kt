@@ -109,7 +109,6 @@ class K9BehovssekvensTest {
                 barn = listOf(
                     Barn(
                         identitetsnummer = "10987654321",
-                        aktørId = "654321",
                         fødselsdato = LocalDate.parse("2010-01-01"),
                         aleneOmOmsorgen = true,
                         utvidetRett = true,

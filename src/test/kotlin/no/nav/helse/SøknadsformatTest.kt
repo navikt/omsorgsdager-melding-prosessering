@@ -56,7 +56,6 @@ class SøknadsformatTest {
                   "identitetsnummer": "10987654321",
                   "navn": "Doffen Nordmann",
                   "fødselsdato": "2010-01-01",
-                  "aktørId": "654321",
                   "aleneOmOmsorgen": true,
                   "utvidetRett": true
                 }
