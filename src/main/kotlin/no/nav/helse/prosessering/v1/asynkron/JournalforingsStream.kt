@@ -32,15 +32,6 @@ internal class JournalforingsStream(
         private const val NAME = "JournalforingV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        val ignoreList = listOf(
-            "generated-b6a9e2ab-d5f5-4c00-97ca-3c4f00b2319e",
-            "generated-c13e0c9d-c9c1-4b28-b990-1af8c18a17cf",
-            "generated-6213154f-2752-4d4c-8b15-ae73bde0b80b",
-            "generated-26fcbf6a-16a2-4030-b181-14164adc4eb2",
-            "generated-0972f2d4-56d1-464a-83bf-ee5045b54301",
-            "generated-cc50f9e1-1184-464c-89b7-836e77d60586"
-        )
-
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
             val fraPreprossesert = Topics.PREPROSSESERT
@@ -49,7 +40,6 @@ internal class JournalforingsStream(
             val mapValues = builder
                 .stream(fraPreprossesert.name, fraPreprossesert.consumed)
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .filter { _, entry -> !ignoreList.contains(entry.metadata.correlationId) }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info(formaterStatuslogging(soknadId, "journalføres"))
