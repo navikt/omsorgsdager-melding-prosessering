@@ -18,13 +18,19 @@ class PdfV1GeneratorTest {
 
         var id = "1-overføringsmelding-full"
         var pdf = generator.generateSoknadOppsummeringPdf(
-            melding = SøknadUtils.gyldigSøknad(søknadId = id)
+            melding = SøknadUtils.gyldigSøknad(
+                søknadId = id,
+                id = "01ERQ0796659C4ANGK5EKQ4FG4"
+            )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
         id = "2-fordelingsmelding-full"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = SøknadUtils.gyldigSøknad(søknadId = id).copy(
+            melding = SøknadUtils.gyldigSøknad(
+                id = "01ERQ08MR3G9YADS8XRQ3R3NSE",
+                søknadId = id
+            ).copy(
                 type = Meldingstype.FORDELING,
                 overføring = null,
                 fordeling = FordelingsMelding(
@@ -37,7 +43,10 @@ class PdfV1GeneratorTest {
 
         id = "3-koronaoverføringsmelding-full"
         pdf = generator.generateSoknadOppsummeringPdf(
-            melding = SøknadUtils.gyldigSøknad(søknadId = id).copy(
+            melding = SøknadUtils.gyldigSøknad(
+                id = "01ERQ0A8NPGQYJ6AYK3AGR2M0T",
+                søknadId = id
+            ).copy(
                 type = Meldingstype.KORONA,
                 overføring = null,
                 korona = KoronaOverføringMelding(

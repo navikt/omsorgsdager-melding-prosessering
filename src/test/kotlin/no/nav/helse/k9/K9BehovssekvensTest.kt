@@ -31,19 +31,33 @@ class K9BehovssekvensTest {
               "@versjon": "1",
               "@correlationId": "12345678910",
               "@behovsrekkefølge": [
-                "MidlertidigAlene"
+                "OverføreOmsorgsdager"
               ],
               "@behov": {
-                "MidlertidigAlene": {
+                "OverføreOmsorgsdager": {
                   "versjon": "1.0.0",
-                  "søker": {
-                    "identitetsnummer": "$gyldigFodselsnummerA"
+                  "kilde": "Digital",
+                  "omsorgsdagerTattUtIÅr": 1,
+                  "omsorgsdagerÅOverføre": 15,
+                  "fra": {
+                    "identitetsnummer": "02119970078",
+                    "jobberINorge": true
                   },
-                  "annenForelder": {
-                    "identitetsnummer": "$gyldigFodselsnummerA"
+                  "til": {
+                    "identitetsnummer": "12345678910",
+                    "relasjon": "NåværendeEktefelle",
+                    "harBoddSammenMinstEttÅr": null
                   },
                   "journalpostIder": [
                     "12345"
+                  ],
+                  "barn": [
+                    {
+                      "identitetsnummer": "10987654321",
+                      "fødselsdato": "2010-01-01",
+                      "aleneOmOmsorgen": true,
+                      "utvidetRett": true
+                    }
                   ],
                   "mottatt": "2020-01-01T12:00:00Z"
                 }
@@ -95,7 +109,6 @@ class K9BehovssekvensTest {
                 barn = listOf(
                     Barn(
                         identitetsnummer = "10987654321",
-                        aktørId = "654321",
                         fødselsdato = LocalDate.parse("2010-01-01"),
                         aleneOmOmsorgen = true,
                         utvidetRett = true,

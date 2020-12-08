@@ -16,6 +16,7 @@ class SøknadsformatTest {
         val json = Søknadsformat.somJson(SøknadUtils.gyldigSøknad(
             søkerFødselsnummer = "123456789",
             mottatt = ZonedDateTime.parse("2018-01-02T03:04:05Z"),
+            id = "01ERQ0AXTRPDV6NN70NMTYC0EX",
             søknadId = "d559c242-e95f-4dda-8d59-7d0b06985bb3"
         ).copy(
             fordeling = FordelingsMelding(MottakerType.SAMVÆRSFORELDER, listOf(URL("http://localhost:8080/vedlegg/1"))),
@@ -27,7 +28,7 @@ class SøknadsformatTest {
             //language=json
             """
             {
-              "id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "id": "01ERQ0AXTRPDV6NN70NMTYC0EX",
               "søknadId": "d559c242-e95f-4dda-8d59-7d0b06985bb3",
               "type": "OVERFORING",
               "mottatt": "2018-01-02T03:04:05Z",
@@ -55,7 +56,6 @@ class SøknadsformatTest {
                   "identitetsnummer": "10987654321",
                   "navn": "Doffen Nordmann",
                   "fødselsdato": "2010-01-01",
-                  "aktørId": "654321",
                   "aleneOmOmsorgen": true,
                   "utvidetRett": true
                 }

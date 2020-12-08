@@ -10,6 +10,7 @@ object SøknadUtils {
     fun gyldigSøknad(
         søkerFødselsnummer: String = "02119970078",
         søknadId: String = UUID.randomUUID().toString(),
+        id: String,
         mottatt: ZonedDateTime = ZonedDateTime.now()
     ) = Melding(
         språk = "nb",
@@ -23,7 +24,7 @@ object SøknadUtils {
             mellomnavn = "Mellomnavn",
             fornavn = "Ola"
         ),
-        id = "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+        id = id,
         arbeidssituasjon = listOf(Arbeidssituasjon.FRILANSER),
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
@@ -37,7 +38,6 @@ object SøknadUtils {
         barn = listOf(
             Barn(
                 identitetsnummer = "10987654321",
-                aktørId = "654321",
                 fødselsdato = LocalDate.parse("2010-01-01"),
                 aleneOmOmsorgen = true,
                 utvidetRett = true,

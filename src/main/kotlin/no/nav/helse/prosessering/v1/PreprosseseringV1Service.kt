@@ -65,6 +65,10 @@ internal class PreprosseseringV1Service(
             )
         )
 
+        if (melding.type == Meldingstype.FORDELING && melding.fordeling != null) {
+            komplettDokumentUrls.add(melding.fordeling.samværsavtale.map { it.toURI() })
+        }
+
         logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
 
         val preprossesertMeldingV1 = PreprossesertMelding(
