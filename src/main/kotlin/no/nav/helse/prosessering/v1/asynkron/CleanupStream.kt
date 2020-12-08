@@ -16,7 +16,6 @@ import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
 import java.lang.IllegalStateException
-import java.time.LocalDate
 
 internal class CleanupStream(
     kafkaConfig: KafkaConfig,
@@ -140,9 +139,8 @@ internal fun Cleanup.tilK9Behovssekvens(): Behovssekvens = let {
                 omsorgsdagerÅOverføre = korona.antallDagerSomSkalOverføres,
                 barn = melding.barn.map { it.somOverføreKoronaOmsorgsdagerBehovBarn() },
                 periode = OverføreKoronaOmsorgsdagerBehov.Periode(
-                    // TODO: Periodeinfo må sendes med fra frontend
-                    fraOgMed = LocalDate.now().minusDays(3),
-                    tilOgMed = LocalDate.now()
+                    fraOgMed = korona.stengingsperiode.fraOgMed,
+                    tilOgMed = korona.stengingsperiode.tilOgMed
                 ),
                 journalpostIder = journalPostIdListe,
                 mottatt = melding.mottatt

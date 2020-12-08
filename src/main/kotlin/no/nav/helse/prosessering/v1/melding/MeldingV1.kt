@@ -30,7 +30,13 @@ data class Melding(
 )
 
 data class KoronaOverføringMelding(
-    val antallDagerSomSkalOverføres: Int
+    val antallDagerSomSkalOverføres: Int,
+    val stengingsperiode: KoronaStengingsperiode
+)
+
+data class KoronaStengingsperiode(
+    @JsonFormat(pattern = "yyyy-MM-dd") val fraOgMed: LocalDate,
+    @JsonFormat(pattern = "yyyy-MM-dd") val tilOgMed: LocalDate
 )
 
 data class FordelingsMelding(

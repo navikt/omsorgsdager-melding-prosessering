@@ -112,7 +112,11 @@ internal class PdfV1Generator {
                         ),
                         "korona" to melding.korona?.let {
                             mapOf(
-                                "antallDagerSomSkalOverføres" to it.antallDagerSomSkalOverføres
+                                "antallDagerSomSkalOverføres" to it.antallDagerSomSkalOverføres,
+                                "stengingsperiode" to mapOf(
+                                    "fraOgMed" to it.stengingsperiode.fraOgMed,
+                                    "tilOgMed" to it.stengingsperiode.tilOgMed
+                                )
                             )
                         },
                         "overføring" to melding.overføring?.let {

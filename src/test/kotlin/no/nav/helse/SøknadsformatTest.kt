@@ -3,9 +3,11 @@ package no.nav.helse
 import no.nav.helse.dokument.Søknadsformat
 import no.nav.helse.prosessering.v1.melding.FordelingsMelding
 import no.nav.helse.prosessering.v1.melding.KoronaOverføringMelding
+import no.nav.helse.prosessering.v1.melding.KoronaStengingsperiode
 import no.nav.helse.prosessering.v1.melding.MottakerType
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URL
+import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.Test
 
@@ -20,8 +22,14 @@ class SøknadsformatTest {
             søknadId = "d559c242-e95f-4dda-8d59-7d0b06985bb3"
         ).copy(
             fordeling = FordelingsMelding(MottakerType.SAMVÆRSFORELDER, listOf(URL("http://localhost:8080/vedlegg/1"))),
-            korona = KoronaOverføringMelding(15)
-        )
+            korona = KoronaOverføringMelding(
+                antallDagerSomSkalOverføres = 15,
+                stengingsperiode = KoronaStengingsperiode(
+                    fraOgMed = LocalDate.parse("2020-06-06"),
+                    tilOgMed = LocalDate.parse("2020-10-10")
+                    )
+                )
+            )
         )
 
         val forventetSøknad =
@@ -65,7 +73,11 @@ class SøknadsformatTest {
                 "samværsavtale": ["http://localhost:8080/vedlegg/1"]
               },
               "korona": {
-                 "antallDagerSomSkalOverføres": 15
+                 "antallDagerSomSkalOverføres": 15,
+                 "stengingsperiode": {
+                    "fraOgMed": "2020-06-06", 
+                    "tilOgMed": "2020-10-10"
+                 }
               },
               "overføring": {
                  "mottakerType": "EKTEFELLE",
