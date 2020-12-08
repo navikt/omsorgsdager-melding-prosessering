@@ -12,7 +12,7 @@
     "K9_MELLOMLAGRING_CLIENT_ID": "8d0460bd-ea81-4b08-b524-cf04874a794c/.default",
     "K9_JOARK_CLIENT_ID": "b32ae17c-0276-4006-9507-4ef49e0e5e20/.default",
     "KAFKA_BOOTSTRAP_SERVERS": "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
-    "KAFKA_AUTO_OFFSET_RESET": "null"
+    "KAFKA_AUTO_OFFSET_RESET": "none"
   },
   "slack-channel": "sif-alerts-dev",
   "slack-notify-type": "<!here> | omsorgsdager-melding-prosessering | "
