@@ -40,6 +40,7 @@ internal class JournalforingsStream(
             val mapValues = builder
                 .stream(fraPreprossesert.name, fraPreprossesert.consumed)
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filter { _, entry -> "generated-b6a9e2ab-d5f5-4c00-97ca-3c4f00b2319e" !== entry.metadata.correlationId }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info(formaterStatuslogging(soknadId, "journalføres"))
@@ -48,7 +49,7 @@ internal class JournalforingsStream(
                         val dokumenter = preprosessertMelding.dokumentUrls
                         logger.info("Journalfører dokumenter: {}", dokumenter)
 
-                        val journalPostId = when(preprosessertMelding.type) {
+                        val journalPostId = when (preprosessertMelding.type) {
                             Meldingstype.KORONA -> joarkGateway.journalførKoronaOverføringsMelding(
                                 mottatt = preprosessertMelding.mottatt,
                                 norskIdent = preprosessertMelding.søker.fødselsnummer,
