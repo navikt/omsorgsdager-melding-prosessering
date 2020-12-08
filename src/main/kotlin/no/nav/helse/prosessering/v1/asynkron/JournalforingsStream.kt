@@ -46,7 +46,7 @@ internal class JournalforingsStream(
 
                         val preprosessertMelding = entry.deserialiserTilPreprosessertMelding()
                         val dokumenter = preprosessertMelding.dokumentUrls
-                        logger.trace("Journalfører dokumenter: {}", dokumenter)
+                        logger.info("Journalfører dokumenter: {}", dokumenter)
 
                         val journalPostId = when(preprosessertMelding.type) {
                             Meldingstype.KORONA -> joarkGateway.journalførKoronaOverføringsMelding(
