@@ -174,7 +174,7 @@ class OmsorgsdagerMeldingProsesseringTest {
     @Test
     fun `Gyldig melding om deling av omsorgsdager blir prosessert av journalføringkonsumer`() {
         val søknad = SøknadUtils.gyldigSøknad(
-            id = "01ERQ05R3MJ7XAFH3RA0YQEQP4",
+            id = "01ERQ05R3MJ7XAFH3RA0YQEQP5",
             søkerFødselsnummer = gyldigFodselsnummerA
         )
 

@@ -96,6 +96,8 @@
         {{#if korona}}
             <p class="sporsmalstekst">Hvor mange omsorgsdager skal overføres til {{felles.mottaker.navn}}?</p>
             <p>{{korona.antallDagerSomSkalOverføres}}</p>
+            <p class="sporsmalstekst">Hvilken stengingsperiode gjelder det for?</p>
+            <p>{{korona.stengingsperiode.fraOgMed}} - {{korona.stengingsperiode.tilOgMed}}</p>
         {{/if}}
 
         <!-- Omsorgsdageroveføring -->

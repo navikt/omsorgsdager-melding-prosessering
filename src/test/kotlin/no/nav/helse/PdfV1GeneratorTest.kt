@@ -4,7 +4,6 @@ import no.nav.helse.prosessering.v1.PdfV1Generator
 import no.nav.helse.prosessering.v1.melding.*
 import java.io.File
 import java.time.LocalDate
-import java.time.ZonedDateTime
 import kotlin.test.Test
 
 class PdfV1GeneratorTest {
@@ -50,7 +49,11 @@ class PdfV1GeneratorTest {
                 type = Meldingstype.KORONA,
                 overføring = null,
                 korona = KoronaOverføringMelding(
-                    antallDagerSomSkalOverføres = 10
+                    antallDagerSomSkalOverføres = 10,
+                    stengingsperiode = KoronaStengingsperiode(
+                        fraOgMed = LocalDate.parse("2020-06-06"),
+                        tilOgMed = LocalDate.parse("2020-10-10")
+                    )
                 )
             )
         )

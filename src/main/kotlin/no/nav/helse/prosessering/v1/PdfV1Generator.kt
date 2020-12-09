@@ -60,6 +60,7 @@ internal class PdfV1Generator {
 
         private val ZONE_ID = ZoneId.of("Europe/Oslo")
         private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
+        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
         private fun loadPng(name: String): String {
             val bytes = "$ROOT/images/$name.png".fromResources().readBytes()
@@ -112,7 +113,11 @@ internal class PdfV1Generator {
                         ),
                         "korona" to melding.korona?.let {
                             mapOf(
-                                "antallDagerSomSkalOverføres" to it.antallDagerSomSkalOverføres
+                                "antallDagerSomSkalOverføres" to it.antallDagerSomSkalOverføres,
+                                "stengingsperiode" to mapOf(
+                                    "fraOgMed" to DATE_FORMATTER.format(it.stengingsperiode.fraOgMed),
+                                    "tilOgMed" to DATE_FORMATTER.format(it.stengingsperiode.tilOgMed)
+                                )
                             )
                         },
                         "overføring" to melding.overføring?.let {
