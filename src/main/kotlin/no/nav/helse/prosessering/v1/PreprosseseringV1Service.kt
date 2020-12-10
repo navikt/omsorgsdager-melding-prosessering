@@ -65,7 +65,7 @@ internal class PreprosseseringV1Service(
             )
         )
 
-        if (melding.type == Meldingstype.FORDELING && melding.fordeling != null) {
+        if (melding.type == Meldingstype.FORDELING && melding.fordeling != null && melding.fordeling.samværsavtale.isNotEmpty()) {
             komplettDokumentUrls.add(melding.fordeling.samværsavtale.map { it.toURI() })
         }
 
