@@ -99,7 +99,7 @@ internal class PdfV1Generator {
                                 "erYrkesaktiv" to melding.erYrkesaktiv,
                                 "arbeiderINorge" to melding.arbeiderINorge,
                                 "arbeidssituasjon" to melding.arbeidssituasjon.somMapTilPdfArbeidssituasjon(),
-                                "antalllDagerBruktIÅr" to melding.antalllDagerBruktIÅr
+                                "antallDagerBruktIÅr" to melding.antallDagerBruktIÅr
                             ),
                             "barn" to melding.barn.somMap(),
                             "mottaker" to mapOf(
