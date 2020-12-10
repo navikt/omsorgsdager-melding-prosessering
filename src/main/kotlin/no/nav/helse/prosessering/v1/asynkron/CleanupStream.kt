@@ -93,7 +93,7 @@ internal fun Cleanup.tilK9Behovssekvens(): Behovssekvens = let {
             OverføreOmsorgsdagerBehov(
                 kilde = OverføreOmsorgsdagerBehov.Kilde.Digital,
                 mottatt = melding.mottatt,
-                omsorgsdagerTattUtIÅr = melding.antalllDagerBruktIÅr ?: 0,
+                omsorgsdagerTattUtIÅr = melding.antallDagerBruktIÅr ?: 0,
                 omsorgsdagerÅOverføre = overføring.antallDagerSomSkalOverføres,
                 barn = melding.barn.map { it.tilOverføreOmsorgsdagerBehovBarn() },
                 journalpostIder = journalPostIdListe,
@@ -135,7 +135,7 @@ internal fun Cleanup.tilK9Behovssekvens(): Behovssekvens = let {
                 til = OverføreKoronaOmsorgsdagerBehov.OverførerTil(
                     identitetsnummer = melding.mottakerFnr
                 ),
-                omsorgsdagerTattUtIÅr = melding.antalllDagerBruktIÅr ?: 0,
+                omsorgsdagerTattUtIÅr = melding.antallDagerBruktIÅr ?: 0,
                 omsorgsdagerÅOverføre = korona.antallDagerSomSkalOverføres,
                 barn = melding.barn.map { it.somOverføreKoronaOmsorgsdagerBehovBarn() },
                 periode = OverføreKoronaOmsorgsdagerBehov.Periode(

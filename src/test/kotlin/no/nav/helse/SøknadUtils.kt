@@ -28,7 +28,7 @@ object SøknadUtils {
         arbeidssituasjon = listOf(Arbeidssituasjon.FRILANSER),
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
-        antalllDagerBruktIÅr = 1,
+        antallDagerBruktIÅr = 1,
         arbeiderINorge = true,
         erYrkesaktiv = true,
         harAleneomsorg = true,
