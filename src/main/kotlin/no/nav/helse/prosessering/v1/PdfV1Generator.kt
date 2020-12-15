@@ -134,7 +134,8 @@ internal class PdfV1Generator {
                         },
                         "hjelp" to mapOf(
                             "språk" to melding.språk.språkTilTekst(),
-                            "erDet2020Fortsatt" to åretEr2020()
+                            "erDet2020Fortsatt" to åretEr2020(), //TODO Kan fjernes etter nyttår.
+                            "gjelderKoronaoverføringI2020" to melding.gjelderKoronaoverføringI2020()
                         )
                     )
                 )

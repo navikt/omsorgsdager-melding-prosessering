@@ -12,15 +12,17 @@ import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertK9RapidFormat
+import no.nav.helse.prosessering.v1.melding.KoronaOverføringMelding
+import no.nav.helse.prosessering.v1.melding.KoronaStengingsperiode
+import no.nav.helse.prosessering.v1.melding.Meldingstype
 import org.json.JSONObject
 import org.junit.AfterClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
+import kotlin.test.*
 
 
 @KtorExperimentalAPI
@@ -182,6 +184,42 @@ class OmsorgsdagerMeldingProsesseringTest {
         k9RapidKonsumer
             .hentK9RapidMelding(søknad.id)
             .assertK9RapidFormat(søknad.id)
+    }
+
+    @Test
+    fun `Sjekk at metoden gjelderKoronaoverføringI2020 fungerer som forventet`(){
+        var melding = SøknadUtils.gyldigSøknad(id = "01ERQ05R3MJ7XAFH3RA0YQEQP5").copy(
+            type = Meldingstype.KORONA,
+            korona = KoronaOverføringMelding(
+                antallDagerSomSkalOverføres = 5,
+                stengingsperiode = KoronaStengingsperiode(
+                    fraOgMed = LocalDate.parse("2020-08-10"),
+                    tilOgMed = LocalDate.parse("2020-12-31")
+                )
+            )
+        )
+        assertTrue(melding.gjelderKoronaoverføringI2020())
+
+        melding = melding.copy(
+            korona = melding.korona!!.copy(
+                stengingsperiode = KoronaStengingsperiode(
+                    fraOgMed = LocalDate.parse("2020-03-13"),
+                    tilOgMed = LocalDate.parse("2020-06-30")
+                )
+            )
+        )
+        assertTrue(melding.gjelderKoronaoverføringI2020())
+
+        melding = melding.copy(
+            korona = melding.korona!!.copy(
+                stengingsperiode = KoronaStengingsperiode(
+                    fraOgMed = LocalDate.parse("2021-01-01"),
+                    tilOgMed = LocalDate.parse("2021-12-31")
+                )
+            )
+        )
+
+        assertFalse(melding.gjelderKoronaoverføringI2020())
 
     }
 
