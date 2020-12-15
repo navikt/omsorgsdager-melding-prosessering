@@ -27,7 +27,11 @@ data class Melding(
     val fordeling: FordelingsMelding? = null,
     val harBekreftetOpplysninger: Boolean,
     val harForståttRettigheterOgPlikter: Boolean
-)
+) {
+    fun gjelderKoronaoverføringI2020(): Boolean {
+        return korona?.stengingsperiode?.tilOgMed?.isBefore(LocalDate.parse("2021-01-01")) ?: false
+    }
+}
 
 data class KoronaOverføringMelding(
     val antallDagerSomSkalOverføres: Int,
@@ -50,7 +54,7 @@ data class OverføringsMelding(
 )
 
 enum class Meldingstype(val type: String) {
-    @JsonAlias("KORONA_OVERFØRE")KORONA("COVID-19"),
+    KORONA("COVID-19"),
     OVERFORING("Overføring"),
     FORDELING("Fordeling")
 }
