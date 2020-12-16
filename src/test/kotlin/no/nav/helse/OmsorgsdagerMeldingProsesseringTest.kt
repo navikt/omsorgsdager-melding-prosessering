@@ -186,43 +186,6 @@ class OmsorgsdagerMeldingProsesseringTest {
             .assertK9RapidFormat(søknad.id)
     }
 
-    @Test
-    fun `Sjekk at metoden gjelderKoronaoverføringI2020 fungerer som forventet`(){
-        var melding = SøknadUtils.gyldigSøknad(id = "01ERQ05R3MJ7XAFH3RA0YQEQP5").copy(
-            type = Meldingstype.KORONA,
-            korona = KoronaOverføringMelding(
-                antallDagerSomSkalOverføres = 5,
-                stengingsperiode = KoronaStengingsperiode(
-                    fraOgMed = LocalDate.parse("2020-08-10"),
-                    tilOgMed = LocalDate.parse("2020-12-31")
-                )
-            )
-        )
-        assertTrue(melding.gjelderKoronaoverføringI2020())
-
-        melding = melding.copy(
-            korona = melding.korona!!.copy(
-                stengingsperiode = KoronaStengingsperiode(
-                    fraOgMed = LocalDate.parse("2020-03-13"),
-                    tilOgMed = LocalDate.parse("2020-06-30")
-                )
-            )
-        )
-        assertTrue(melding.gjelderKoronaoverføringI2020())
-
-        melding = melding.copy(
-            korona = melding.korona!!.copy(
-                stengingsperiode = KoronaStengingsperiode(
-                    fraOgMed = LocalDate.parse("2021-01-01"),
-                    tilOgMed = LocalDate.parse("2021-12-31")
-                )
-            )
-        )
-
-        assertFalse(melding.gjelderKoronaoverføringI2020())
-
-    }
-
     private infix fun String.validerK9RapidFormat(id: String) {
         val rawJson = JSONObject(this)
         println(rawJson)
