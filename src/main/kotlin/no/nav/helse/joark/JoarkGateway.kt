@@ -99,6 +99,7 @@ class JoarkGateway(
         val httpRequest = url
             .toString()
             .httpPost()
+            .timeout(60_000)
             .body(contentStream)
             .header(
                 HttpHeaders.XCorrelationId to correlationId.value,
