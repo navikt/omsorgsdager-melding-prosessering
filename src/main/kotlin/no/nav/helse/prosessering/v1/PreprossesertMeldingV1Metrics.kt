@@ -14,13 +14,8 @@ internal fun PreprossesertMelding.reportMetrics(){
     val logger = LoggerFactory.getLogger("no.nav.helse.prosessering.v1.Metrics")
 
     if(this.fordeling != null){
-        if(fordeling.samværsavtale.isEmpty()){
-            logger.info("Metrikk: Øker 'vedlegg' 'Nei'")
-            generelCounter.labels("vedlegg", "Nei").inc()
-        } else {
-            logger.info("Metrikk: Øker 'vedlegg' 'Ja'")
-            generelCounter.labels("vedlegg", "Ja").inc()
-        }
+        if(fordeling.samværsavtale.isEmpty()) generelCounter.labels("vedlegg", "Nei").inc()
+        else generelCounter.labels("vedlegg", "Ja").inc()
     }
 
 }
