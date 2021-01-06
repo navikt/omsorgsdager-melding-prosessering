@@ -56,11 +56,7 @@
         </ul>
 
         {{#if felles.situasjon.antallDagerBruktIÅr}}
-            {{#if hjelp.erDet2020Fortsatt}}
-                <p class="sporsmalstekst">Hvor mange omsorgsdager har du brukt etter 1. juli 2020?</p>
-            {{else}}
-                <p class="sporsmalstekst">Hvor mange omsorgsdager har du brukt i år?</p>
-            {{/if}}
+            <p class="sporsmalstekst">Hvor mange omsorgsdager har du brukt i år?</p>
             <p>{{felles.situasjon.antallDagerBruktIÅr}}</p>
         {{/if}}
     </section>
@@ -96,12 +92,8 @@
         {{#if korona}}
             <p class="sporsmalstekst">Hvor mange omsorgsdager skal overføres til {{felles.mottaker.navn}}?</p>
             <p>{{korona.antallDagerSomSkalOverføres}}</p>
-            {{#if hjelp.erDet2020Fortsatt}}
-                <p class="sporsmalstekst">Hvilken stengingsperiode gjelder det for?</p>
-                <p>{{korona.stengingsperiode.fraOgMed}} - {{korona.stengingsperiode.tilOgMed}}</p>
-            {{else}}
-                <!-- Hvis det er 2021 så er det bare en gyldig periode og bruker velger ikke det selv. -->
-            {{/if}}
+            <p class="sporsmalstekst">Hvilken stengingsperiode gjelder det for?</p>
+            <p>{{korona.stengingsperiode.fraOgMed}} - {{korona.stengingsperiode.tilOgMed}}</p>
         {{/if}}
 
         <!-- Omsorgsdageroveføring -->
@@ -148,4 +140,3 @@
 </body>
 
 </html>
-
