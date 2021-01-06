@@ -10,11 +10,9 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.prosessering.v1.melding.*
-import no.nav.helse.prosessering.v1.melding.somMapTilPdfArbeidssituasjon
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -133,8 +131,7 @@ internal class PdfV1Generator {
                             )
                         },
                         "hjelp" to mapOf(
-                            "språk" to melding.språk.språkTilTekst(),
-                            "erDet2020Fortsatt" to åretEr2020() //TODO Kan fjernes etter nyttår.
+                            "språk" to melding.språk.språkTilTekst()
                         )
                     )
                 )
@@ -155,9 +152,6 @@ internal class PdfV1Generator {
             }
         }
     }
-
-    private fun åretEr2020() = (LocalDate.now().year == 2020)
-
 
     private fun PdfRendererBuilder.medFonter() =
         useFont(
