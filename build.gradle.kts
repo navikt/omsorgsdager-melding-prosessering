@@ -69,10 +69,7 @@ dependencies {
 }
 
 repositories {
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://kotlin.bintray.com/kotlinx")
-    maven("http://packages.confluent.io/maven/")
-
+    mavenLocal()
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/navikt/k9-format")
@@ -81,10 +78,13 @@ repositories {
             password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
         }
     }
-
-    jcenter()
-    mavenLocal()
     mavenCentral()
+    jcenter()
+    maven("https://dl.bintray.com/kotlin/ktor")
+    maven("https://kotlin.bintray.com/kotlinx")
+    maven("http://packages.confluent.io/maven/")
+
+
 }
 
 java {
