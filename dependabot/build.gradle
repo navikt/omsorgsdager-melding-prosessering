@@ -12,7 +12,7 @@ dependencies {
     compile 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.2'
     compile 'org.slf4j:jcl-over-slf4j:1.7.30'
     compile 'com.github.jknack:handlebars:4.1.2'
-    compile 'org.apache.kafka:kafka-streams:2.4.0'
+    compile 'org.apache.kafka:kafka-streams:2.7.0'
     compile 'no.nav.k9.rapid:behov:1.91b665d'
     compile 'no.nav.k9.rapid:overfore-omsorgsdager:1.6d743f4'
     compile 'no.nav.k9.rapid:fordele-omsorgsdager:1.3265f25'
