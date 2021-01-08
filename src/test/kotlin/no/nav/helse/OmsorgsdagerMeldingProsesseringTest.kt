@@ -7,22 +7,21 @@ import io.ktor.http.*
 import io.ktor.server.engine.*
 import io.ktor.server.testing.*
 import io.ktor.util.*
+import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertK9RapidFormat
-import no.nav.helse.prosessering.v1.melding.KoronaOverføringMelding
-import no.nav.helse.prosessering.v1.melding.KoronaStengingsperiode
-import no.nav.helse.prosessering.v1.melding.Meldingstype
 import org.json.JSONObject
 import org.junit.AfterClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
-import java.time.LocalDate
 import java.util.concurrent.TimeUnit
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 
 @KtorExperimentalAPI
@@ -77,6 +76,7 @@ class OmsorgsdagerMeldingProsesseringTest {
 
         internal fun restartEngine() {
             stopEngine()
+            CollectorRegistry.defaultRegistry.clear()
             engine = newEngine(kafkaEnvironment)
             engine.start(wait = true)
         }
