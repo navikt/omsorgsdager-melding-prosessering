@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "1.4.1.4754df6"
+val dusseldorfKtorVersion = "1.5.0.3315e68"
 val k9RapidBehovVersion = "1.91b665d"
 val k9RapidOverføreOmsorgsdagerVersion = "1.6d743f4"
 val k9RapidFordeleOmsorgsdagerVersion = "1.3265f25"
@@ -18,13 +18,13 @@ val handlebarsVersion = "4.1.2"
 val mainClass = "no.nav.helse.OmsorgsdagerMeldingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.3.70"
+    kotlin("jvm") version "1.4.21"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/4e29fb7f5f69ab1b8d998fc1f674085e2e01e7ad/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/3315e68ec40ad9a24fa0c45d4f463d9cbae56fa0/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -69,10 +69,7 @@ dependencies {
 }
 
 repositories {
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://kotlin.bintray.com/kotlinx")
-    maven("http://packages.confluent.io/maven/")
-
+    mavenLocal()
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/navikt/k9-format")
@@ -81,10 +78,13 @@ repositories {
             password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
         }
     }
-
-    jcenter()
-    mavenLocal()
     mavenCentral()
+    jcenter()
+    maven("https://dl.bintray.com/kotlin/ktor")
+    maven("https://kotlin.bintray.com/kotlinx")
+    maven("http://packages.confluent.io/maven/")
+
+
 }
 
 java {
@@ -110,7 +110,7 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "6.2.2"
+    gradleVersion = "6.7.1"
 }
 
 tasks.register("createDependabotFile") {
