@@ -9,7 +9,7 @@ dependencies {
     compile 'no.nav.helse:dusseldorf-ktor-client:1.5.0.3315e68'
     compile 'no.nav.helse:dusseldorf-oauth2-client:1.5.0.3315e68'
     compile 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.2'
-    compile 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.2'
+    compile 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.6'
     compile 'org.slf4j:jcl-over-slf4j:1.7.30'
     compile 'com.github.jknack:handlebars:4.1.2'
     compile 'org.apache.kafka:kafka-streams:2.4.0'
