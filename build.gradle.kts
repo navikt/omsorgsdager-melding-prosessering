@@ -18,8 +18,8 @@ val handlebarsVersion = "4.1.2"
 val mainClass = "no.nav.helse.OmsorgsdagerMeldingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.4.21"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    kotlin("jvm") version "1.4.30"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 buildscript {
