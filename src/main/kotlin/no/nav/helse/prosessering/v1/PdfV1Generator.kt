@@ -88,7 +88,7 @@ internal class PdfV1Generator {
                             "søknadMottattDag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                             "søknadMottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                             "søker" to mapOf(
-                                "navn" to melding.søker.formatertNavn(),
+                                "navn" to melding.søker.formatertNavn().capitalizeName(),
                                 "fødselsnummer" to melding.søker.fødselsnummer
                             ),
                             "situasjon" to mapOf(
@@ -102,7 +102,7 @@ internal class PdfV1Generator {
                             "barn" to melding.barn.somMap(),
                             "mottaker" to mapOf(
                                 "fnr" to melding.mottakerFnr,
-                                "navn" to melding.mottakerNavn
+                                "navn" to melding.mottakerNavn.capitalizeName()
                             ),
                             "samtykke" to mapOf(
                                 "harForståttRettigheterOgPlikter" to melding.harForståttRettigheterOgPlikter,
@@ -186,7 +186,7 @@ private fun Meldingstype.somTittel(): String = when(this) {
 private fun List<Barn>.somMap(): List<Map<String, Any?>> = map {
     mapOf(
         "fnr" to it.identitetsnummer,
-        "navn" to it.navn,
+        "navn" to it.navn.capitalizeName(),
         "fødselsdato" to it.fødselsdato,
         "aleneOmOmsorgen" to it.aleneOmOmsorgen,
         "utvidetRett" to it.utvidetRett
@@ -195,7 +195,7 @@ private fun List<Barn>.somMap(): List<Map<String, Any?>> = map {
 
 private fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 
-private fun Boolean?.erSatt() = this != null
+fun String.capitalizeName(): String = split(" ").joinToString(" ") { it.toLowerCase().capitalize() }
 
 private fun String.språkTilTekst() = when (this.toLowerCase()) {
     "nb" -> "bokmål"
