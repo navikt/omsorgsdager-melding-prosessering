@@ -2,7 +2,6 @@ package no.nav.helse.prosessering.v1
 
 import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.dokument.DokumentService
-import no.nav.helse.felles.AktørId
 import no.nav.helse.felles.CorrelationId
 import no.nav.helse.felles.Metadata
 import no.nav.helse.felles.SøknadId
