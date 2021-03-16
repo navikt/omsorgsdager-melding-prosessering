@@ -52,4 +52,9 @@ data class PreprossesertMelding(
         overføring = melding.overføring,
         fordeling = melding.fordeling
     )
+
+    override fun toString(): String {
+        return "PreprossesertMelding(id='$id', søknadId='$søknadId', språk='$språk', mottatt=$mottatt)"
+    }
+
 }
