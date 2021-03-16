@@ -27,7 +27,11 @@ data class Melding(
     val fordeling: FordelingsMelding? = null,
     val harBekreftetOpplysninger: Boolean,
     val harForståttRettigheterOgPlikter: Boolean
-)
+){
+    override fun toString(): String {
+        return "Melding(søknadId='$søknadId', id='$id')"
+    }
+}
 
 data class KoronaOverføringMelding(
     val antallDagerSomSkalOverføres: Int,
@@ -67,7 +71,11 @@ data class Barn(
     @JsonFormat(pattern = "yyyy-MM-dd") val fødselsdato: LocalDate,
     val aleneOmOmsorgen: Boolean,
     val utvidetRett: Boolean
-)
+) {
+    override fun toString(): String {
+        return "Barn(identitetsnummer='*****', navn='$navn')"
+    }
+}
 
 data class Søker(
     val fødselsnummer: String,
