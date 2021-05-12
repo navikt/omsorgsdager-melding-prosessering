@@ -2,7 +2,6 @@ package no.nav.helse
 
 import io.ktor.config.ApplicationConfig
 import io.ktor.util.KtorExperimentalAPI
-import no.nav.helse.auth.ApiGatewayApiKey
 import no.nav.helse.dusseldorf.ktor.core.getOptionalString
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
@@ -16,11 +15,6 @@ data class Configuration(private val config : ApplicationConfig) {
 
     fun getk9JoarkBaseUrl() = URI(config.getRequiredString("nav.gateways.k9_joark_url", secret = false))
     fun getK9MellomlagringServiceDiscovery() = URI(config.getRequiredString("nav.gateways.k9_mellomlagring_service_discovery", secret = false))
-
-    internal fun getApiGatewayApiKey() : ApiGatewayApiKey {
-        val apiKey = config.getRequiredString(key = "nav.authorization.api_gateway.api_key", secret = true)
-        return ApiGatewayApiKey(value = apiKey)
-    }
 
     private fun unreadyAfterStreamStoppedIn() = Duration.of(
         config.getRequiredString("nav.kafka.unready_after_stream_stopped_in.amount", secret = false).toLong(),

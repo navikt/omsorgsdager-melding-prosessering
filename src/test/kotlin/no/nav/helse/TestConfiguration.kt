@@ -18,7 +18,6 @@ object TestConfiguration {
             Pair("ktor.deployment.port","$port"),
             Pair("nav.gateways.k9_joark_url","$k9JoarkBaseUrl"),
             Pair("nav.gateways.k9_mellomlagring_service_discovery","$k9MellomlagringServiceDiscovery"),
-            Pair("nav.authorization.api_gateway.api_key", "verysecret")
         )
 
         // Clients
