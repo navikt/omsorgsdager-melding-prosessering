@@ -5,6 +5,7 @@
     </appender>
 
     <logger name="org.eclipse.jetty" level="INFO"/>
+    <logger name="org.apache.kafka.streams.processor.internals.TaskManager" level="ERROR"/>
     <logger name="io.netty" level="INFO"/>
     <logger name="nav" level="INFO"/>
     <logger name="no.nav" level="INFO"/>
