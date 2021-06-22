@@ -2,6 +2,7 @@
   "app": "omsorgsdager-melding-prosessering",
   "cluster": "prod-gcp",
   "namespace": "dusseldorf",
+  "kafka-pool" : "nav-prod",
   "team": "dusseldorf",
   "tenant": "nav.no",
   "ingresses": [],

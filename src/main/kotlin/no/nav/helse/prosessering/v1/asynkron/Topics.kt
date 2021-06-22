@@ -35,22 +35,22 @@ internal data class Topic(
 
 internal object Topics {
     val MOTTATT = Topic(
-        name = "privat-omsorgsdager-melding-mottatt",
+        name = "dusseldorf.privat-omsorgsdager-melding-mottatt",
         serDes = SerDes()
     )
 
     val PREPROSSESERT = Topic(
-        name = "privat-omsorgsdager-melding-preprossesert",
+        name = "dusseldorf.privat-omsorgsdager-melding-preprossesert",
         serDes = SerDes()
     )
 
     val CLEANUP = Topic(
-        name = "privat-omsorgsdager-melding-cleanup",
+        name = "dusseldorf.privat-omsorgsdager-melding-cleanup",
         serDes = SerDes()
     )
 
     val K9_RAPID_V2 = Topic(
-        name = "k9-rapid-v2",
+        name = "omsorgspenger.k9-rapid-v2",
         serDes = SerDes()
     )
 }
