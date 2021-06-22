@@ -76,8 +76,7 @@ class K9BehovssekvensTest {
     val gyldigCleanupMelding = Cleanup(
         metadata = Metadata(
             version = 1,
-            correlationId = "12345678910",
-            requestId = "1111111111"
+            correlationId = "12345678910"
         ),
         journalførtMelding = Journalfort(
             journalpostId = "12345"

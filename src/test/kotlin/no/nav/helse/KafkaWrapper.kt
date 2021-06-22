@@ -114,8 +114,7 @@ fun KafkaProducer<String, TopicEntry>.leggTilMottak(soknad: Melding) {
             TopicEntry(
                 metadata = Metadata(
                     version = 1,
-                    correlationId = UUID.randomUUID().toString(),
-                    requestId = UUID.randomUUID().toString()
+                    correlationId = UUID.randomUUID().toString()
                 ),
                 data = Data(omsorgsdagerMeldingKonfigurertMapper().writeValueAsString(soknad))
             )

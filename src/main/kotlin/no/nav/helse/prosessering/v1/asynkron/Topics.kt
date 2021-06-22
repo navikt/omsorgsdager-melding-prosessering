@@ -77,8 +77,7 @@ data class TopicEntry(val rawJson: String) {
                 "metadata" to JSONObject(
                     mapOf(
                         "version" to metadata.version,
-                        "correlationId" to metadata.correlationId,
-                        "requestId" to metadata.requestId
+                        "correlationId" to metadata.correlationId
                     )
                 ),
                 "data" to JSONObject(data.rawJson)
@@ -91,8 +90,7 @@ data class TopicEntry(val rawJson: String) {
     private val dataJson = requireNotNull(entityJson.getJSONObject("data"))
     val metadata = Metadata(
         version = requireNotNull(metadataJson.getInt("version")),
-        correlationId = requireNotNull(metadataJson.getString("correlationId")),
-        requestId = requireNotNull(metadataJson.getString("requestId"))
+        correlationId = requireNotNull(metadataJson.getString("correlationId"))
     )
     val data = Data(dataJson.toString())
 }
