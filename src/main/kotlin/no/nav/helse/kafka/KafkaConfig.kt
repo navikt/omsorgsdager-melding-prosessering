@@ -30,6 +30,7 @@ internal class KafkaConfig(
         put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset)
         if(trustStore == null || keyStore == null) medCredentials(Pair("srvkafkaclient", "kafkaclient")) //For å skille mellom test/miljø
         medTrustStore(trustStore)
+        medKeyStore(keyStore)
         medProcessingGuarantee(exactlyOnce)
     }
 
