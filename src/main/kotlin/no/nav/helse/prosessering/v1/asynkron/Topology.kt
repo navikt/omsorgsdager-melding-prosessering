@@ -23,7 +23,6 @@ internal fun process(
     block: suspend() -> Data) : TopicEntry {
     return runBlocking(MDCContext(mapOf(
         "correlation_id" to entry.metadata.correlationId,
-        "request_id" to entry.metadata.requestId,
         "soknad_id" to soknadId
     ))) {
         val processed = try {
