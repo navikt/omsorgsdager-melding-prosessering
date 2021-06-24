@@ -3,27 +3,25 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.dokument.DokumentGateway
 import no.nav.helse.dokument.DokumentService
 import no.nav.helse.felles.CorrelationId
+import no.nav.helse.felles.Ytelse
 import no.nav.helse.felles.formaterStatuslogging
+import no.nav.helse.felles.tilK9Beskjed
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.prosessering.v1.melding.Barn
-import no.nav.helse.prosessering.v1.melding.Meldingstype
-import no.nav.helse.prosessering.v1.melding.MottakerType
-import no.nav.k9.rapid.behov.*
+import no.nav.helse.prosessering.v1.tilK9Behovssekvens
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
-import java.lang.IllegalStateException
 
 internal class CleanupStream(
     kafkaConfig: KafkaConfig,
     dokumentService: DokumentService
 ) {
     private val stream = ManagedKafkaStreams(
-        name = NAME,
-        properties = kafkaConfig.stream(NAME),
+        name = cleanup,
+        properties = kafkaConfig.stream(cleanup),
         topology = topology(dokumentService),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
@@ -32,26 +30,26 @@ internal class CleanupStream(
     internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
-        private const val NAME = "CleanupV1"
-        private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
+        private const val cleanup = "CleanupV1"
+        private const val k9DittnavVarsel = "K9DittnavVarselV1"
+        private val logger = LoggerFactory.getLogger("no.nav.$cleanup.topology")
 
         private fun topology(dokumentService: DokumentService): Topology {
-            val builder = StreamsBuilder()
             val fraCleanup = Topics.CLEANUP
             val tilK9Rapid = Topics.K9_RAPID_V2
+            val tilK9DittnavVarsel = Topics.K9_DITTNAV_VARSEL
+            val builder = StreamsBuilder()
+            val inputStream = builder.stream(fraCleanup.name, fraCleanup.consumed)
 
-            builder
-                .stream(fraCleanup.name, fraCleanup.consumed)
+            inputStream
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .selectKey { _, value ->
                     value.deserialiserTilCleanup().melding.id
                 }
                 .mapValues { soknadId, entry ->
-                    process(NAME, soknadId, entry) {
+                    process(cleanup, soknadId, entry) {
                         val cleanupMelding = entry.deserialiserTilCleanup()
-
                         logger.info(formaterStatuslogging(cleanupMelding.melding.søknadId, "kjører cleanup"))
-                        logger.trace("Sletter dokumenter.")
 
                         dokumentService.slettDokumeter(
                             urlBolks = cleanupMelding.melding.dokumentUrls,
@@ -59,8 +57,6 @@ internal class CleanupStream(
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
 
-                        logger.trace("Dokumenter slettet.")
-                        logger.trace("Mapper om til Behovssekvens")
                         val behovssekvens = cleanupMelding.tilK9Behovssekvens()
                         val (id, løsning) = behovssekvens.keyValue
 
@@ -75,112 +71,35 @@ internal class CleanupStream(
                     }
                 }
                 .to(tilK9Rapid.name, tilK9Rapid.produced)
+
+            inputStream
+                .filter { _, entry -> 1 == entry.metadata.version }
+                .mapValues { soknadId, entry ->
+                    process(k9DittnavVarsel, soknadId, entry) {
+                        val cleanupMelding = entry.deserialiserTilCleanup()
+                        logger.info(formaterStatuslogging(cleanupMelding.melding.søknadId, "mappes om til K9Beskjed"))
+
+                        val ytelse = when {
+                            cleanupMelding.melding.fordeling != null -> Ytelse.OMSORGSDAGER_MELDING_FORDELE
+                            cleanupMelding.melding.overføring != null -> Ytelse.OMSORGSDAGER_MELDING_OVERFØRE
+                            else -> Ytelse.OMSORGSDAGER_MELDING_KORONA
+                        }
+
+                        val k9beskjed = cleanupMelding.tilK9Beskjed(ytelse)
+                        logger.info(
+                            formaterStatuslogging(
+                                cleanupMelding.melding.søknadId,
+                                "sender K9Beskjed videre til k9-dittnav-varsel med eventId ${k9beskjed.eventId}"
+                            )
+                        )
+                        k9beskjed.serialiserTilData()
+                    }
+                }
+                .to(tilK9DittnavVarsel.name, tilK9DittnavVarsel.produced)
+
             return builder.build()
         }
     }
 
     internal fun stop() = stream.stop(becauseOfError = false)
-}
-
-internal fun Cleanup.tilK9Behovssekvens(): Behovssekvens = let {
-    val correlationId = metadata.correlationId
-    val journalPostIdListe = listOf(journalførtMelding.journalpostId)
-
-    val behov: Behov = when (melding.type) {
-        Meldingstype.OVERFORING -> {
-            val overføring = melding.overføring!!
-            val mottakerType = overføring.mottakerType
-            OverføreOmsorgsdagerBehov(
-                kilde = OverføreOmsorgsdagerBehov.Kilde.Digital,
-                mottatt = melding.mottatt,
-                omsorgsdagerTattUtIÅr = melding.antallDagerBruktIÅr ?: 0,
-                omsorgsdagerÅOverføre = overføring.antallDagerSomSkalOverføres,
-                barn = melding.barn.map { it.tilOverføreOmsorgsdagerBehovBarn() },
-                journalpostIder = journalPostIdListe,
-                fra = OverføreOmsorgsdagerBehov.OverførerFra(
-                    identitetsnummer = melding.søker.fødselsnummer,
-                    jobberINorge = melding.arbeiderINorge
-                ),
-                til = OverføreOmsorgsdagerBehov.OverførerTil(
-                    identitetsnummer = melding.mottakerFnr,
-                    relasjon = mottakerType.tilOverføreOmsorgsdagerBehovRelasjon(),
-                    harBoddSammenMinstEttÅr = mottakerType.let {
-                        if (it == MottakerType.SAMBOER) true else null
-                    }
-                )
-            )
-        }
-
-        Meldingstype.FORDELING -> {
-            FordeleOmsorgsdagerBehov(
-                mottatt = melding.mottatt,
-                fra = FordeleOmsorgsdagerBehov.Fra(
-                    identitetsnummer = melding.søker.fødselsnummer
-                ),
-                til = FordeleOmsorgsdagerBehov.Til(
-                    identitetsnummer = melding.mottakerFnr
-                ),
-                barn = melding.barn.map { it.somFordeleOmsorgsdagerBehovBarn() },
-                journalpostIder = journalPostIdListe
-            )
-        }
-
-        Meldingstype.KORONA -> {
-            val korona = melding.korona!!
-            OverføreKoronaOmsorgsdagerBehov(
-                fra = OverføreKoronaOmsorgsdagerBehov.OverførerFra(
-                    identitetsnummer = melding.søker.fødselsnummer,
-                    jobberINorge = melding.arbeiderINorge
-                ),
-                til = OverføreKoronaOmsorgsdagerBehov.OverførerTil(
-                    identitetsnummer = melding.mottakerFnr
-                ),
-                omsorgsdagerTattUtIÅr = melding.antallDagerBruktIÅr ?: 0,
-                omsorgsdagerÅOverføre = korona.antallDagerSomSkalOverføres,
-                barn = melding.barn.map { it.somOverføreKoronaOmsorgsdagerBehovBarn() },
-                periode = OverføreKoronaOmsorgsdagerBehov.Periode(
-                    fraOgMed = korona.stengingsperiode.fraOgMed,
-                    tilOgMed = korona.stengingsperiode.tilOgMed
-                ),
-                journalpostIder = journalPostIdListe,
-                mottatt = melding.mottatt
-            )
-        }
-    }
-
-    Behovssekvens(
-        id = melding.id,
-        correlationId = correlationId,
-        behov = *arrayOf(
-            behov
-        )
-    )
-}
-
-private fun Barn.somOverføreKoronaOmsorgsdagerBehovBarn(): OverføreKoronaOmsorgsdagerBehov.Barn =
-    OverføreKoronaOmsorgsdagerBehov.Barn(
-        identitetsnummer = identitetsnummer,
-        fødselsdato = fødselsdato,
-        utvidetRett = utvidetRett,
-        aleneOmOmsorgen = aleneOmOmsorgen
-    )
-
-private fun Barn.somFordeleOmsorgsdagerBehovBarn(): FordeleOmsorgsdagerBehov.Barn = FordeleOmsorgsdagerBehov.Barn(
-    identitetsnummer = identitetsnummer,
-    fødselsdato = fødselsdato
-)
-
-private fun MottakerType.tilOverføreOmsorgsdagerBehovRelasjon(): OverføreOmsorgsdagerBehov.Relasjon = when (this) {
-    MottakerType.EKTEFELLE -> OverføreOmsorgsdagerBehov.Relasjon.NåværendeEktefelle
-    MottakerType.SAMBOER -> OverføreOmsorgsdagerBehov.Relasjon.NåværendeSamboer
-    else -> throw IllegalStateException("$this er ikke et gyldig relasjon for OverføreOmsorgsdagerBehov.")
-}
-
-internal fun Barn.tilOverføreOmsorgsdagerBehovBarn(): OverføreOmsorgsdagerBehov.Barn {
-    return OverføreOmsorgsdagerBehov.Barn(
-        identitetsnummer = this.identitetsnummer,
-        fødselsdato = this.fødselsdato,
-        aleneOmOmsorgen = this.aleneOmOmsorgen,
-        utvidetRett = this.utvidetRett
-    )
 }

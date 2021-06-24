@@ -7,6 +7,7 @@ import no.nav.helse.felles.Metadata
 import no.nav.helse.prosessering.v1.asynkron.Data
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP
+import no.nav.helse.prosessering.v1.asynkron.Topics.K9_DITTNAV_VARSEL
 import no.nav.helse.prosessering.v1.asynkron.Topics.K9_RAPID_V2
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT
@@ -37,7 +38,8 @@ object KafkaWrapper {
                 MOTTATT.name,
                 PREPROSSESERT.name,
                 CLEANUP.name,
-                K9_RAPID_V2.name
+                K9_RAPID_V2.name,
+                K9_DITTNAV_VARSEL.name
             )
         )
         return kafkaEnvironment
