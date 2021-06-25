@@ -16,7 +16,7 @@ spec:
     retentionHours: 730  # -1 means unlimited
   acl:
     - team: dusseldorf
-      application: omsorgsdager-melding--api
+      application: omsorgsdager-melding-api
       access: write
     - team: dusseldorf
       application: omsorgsdager-melding-prosessering
