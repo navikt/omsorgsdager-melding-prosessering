@@ -16,7 +16,6 @@ import java.time.DayOfWeek
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 import java.util.logging.Level
 
 internal class PdfV1Generator {
@@ -28,11 +27,9 @@ internal class PdfV1Generator {
         private val BOLD_FONT = "$ROOT/fonts/SourceSansPro-Bold.ttf".fromResources().readBytes()
         private val ITALIC_FONT = "$ROOT/fonts/SourceSansPro-Italic.ttf".fromResources().readBytes()
 
-        private val images = loadImages()
+        private val sRGBColorSpace = "$ROOT/sRGB.icc".fromResources().readBytes()
+
         private val handlebars = Handlebars(ClassPathTemplateLoader("/$ROOT")).apply {
-            registerHelper("image", Helper<String> { context, _ ->
-                if (context == null) "" else images[context]
-            })
             registerHelper("eq", Helper<String> { context, options ->
                 if (context == options.param(0)) options.fn() else options.inverse()
             })
@@ -59,24 +56,10 @@ internal class PdfV1Generator {
         private val ZONE_ID = ZoneId.of("Europe/Oslo")
         private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-
-        private fun loadPng(name: String): String {
-            val bytes = "$ROOT/images/$name.png".fromResources().readBytes()
-            val base64string = Base64.getEncoder().encodeToString(bytes)
-            return "data:image/png;base64,$base64string"
-        }
-
-        private fun loadImages() = mapOf(
-            "Hjelp.png" to loadPng("Hjelp"),
-            "Navlogo.png" to loadPng("Navlogo"),
-            "Personikon.png" to loadPng("Personikon"),
-            "Fritekst.png" to loadPng("Fritekst")
-        )
     }
 
     internal fun generateSoknadOppsummeringPdf(melding: Melding): ByteArray {
         XRLog.listRegisteredLoggers().forEach { logger -> XRLog.setLevel(logger, Level.WARNING) }
-        //XRLog.setLoggingEnabled(false) //TODO Finnes det en måte å kun justere logg level, ikke skru den helt av?
         soknadTemplate.apply(
             Context
                 .newBuilder(
@@ -142,6 +125,8 @@ internal class PdfV1Generator {
             PdfRendererBuilder()
                 .useFastMode()
                 .usePdfUaAccessbility(true)
+                .usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_1_B)
+                .useColorProfile(sRGBColorSpace)
                 .withHtmlContent(html, "")
                 .medFonter()
                 .toStream(outputStream)
