@@ -2,7 +2,6 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -35,22 +34,27 @@ internal data class Topic(
 
 internal object Topics {
     val MOTTATT = Topic(
-        name = "privat-omsorgsdager-melding-mottatt",
+        name = "dusseldorf.privat-omsorgsdager-melding-mottatt",
         serDes = SerDes()
     )
 
     val PREPROSSESERT = Topic(
-        name = "privat-omsorgsdager-melding-preprossesert",
+        name = "dusseldorf.privat-omsorgsdager-melding-preprossesert",
         serDes = SerDes()
     )
 
     val CLEANUP = Topic(
-        name = "privat-omsorgsdager-melding-cleanup",
+        name = "dusseldorf.privat-omsorgsdager-melding-cleanup",
         serDes = SerDes()
     )
 
     val K9_RAPID_V2 = Topic(
-        name = "k9-rapid-v2",
+        name = "omsorgspenger.k9-rapid-v2",
+        serDes = SerDes()
+    )
+
+    val K9_DITTNAV_VARSEL = Topic(
+        name = "dusseldorf.privat-k9-dittnav-varsel-beskjed",
         serDes = SerDes()
     )
 }
@@ -63,7 +67,7 @@ internal fun Any.serialiserTilData() = Data(omsorgsdagerMeldingKonfigurertMapper
 class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
     override fun configure(configs: MutableMap<String, *>?, isKey: Boolean) {}
     override fun close() {}
-    override fun serialize(topic: String, entry: TopicEntry): ByteArray = when (topic == Topics.K9_RAPID_V2.name) {
+    override fun serialize(topic: String, entry: TopicEntry): ByteArray = when (topic == Topics.K9_RAPID_V2.name ||topic == Topics.K9_DITTNAV_VARSEL.name ) {
         true -> entry.data.rawJson.toByteArray()
         false -> entry.rawJson.toByteArray()
     }

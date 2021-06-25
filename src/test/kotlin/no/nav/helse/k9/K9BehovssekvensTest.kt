@@ -3,8 +3,8 @@ package no.nav.helse.k9
 import no.nav.helse.felles.Metadata
 import no.nav.helse.prosessering.v1.asynkron.Cleanup
 import no.nav.helse.prosessering.v1.asynkron.Journalfort
-import no.nav.helse.prosessering.v1.asynkron.tilK9Behovssekvens
 import no.nav.helse.prosessering.v1.melding.*
+import no.nav.helse.prosessering.v1.tilK9Behovssekvens
 import org.json.JSONObject
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
