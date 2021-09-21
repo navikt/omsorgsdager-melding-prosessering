@@ -14,6 +14,7 @@ import no.nav.helse.prosessering.v1.tilK9Behovssekvens
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
+import java.time.ZonedDateTime
 
 internal class CleanupStream(
     kafkaConfig: KafkaConfig,
@@ -30,7 +31,7 @@ internal class CleanupStream(
     internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
-        private const val cleanup = "CleanupV1"
+        private const val cleanup = "CleanupV2"
         private const val k9DittnavVarsel = "K9DittnavVarselV1"
         private val logger = LoggerFactory.getLogger("no.nav.$cleanup.topology")
 
@@ -40,9 +41,13 @@ internal class CleanupStream(
             val tilK9DittnavVarsel = Topics.K9_DITTNAV_VARSEL
             val builder = StreamsBuilder()
             val inputStream = builder.stream(fraCleanup.name, fraCleanup.consumed)
+            val CLEANUP_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T10:14:00.000+01")
+            val K9BESKJED_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T17:00:00.000+01")
 
             inputStream
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filter { _, entry -> entry.deserialiserTilCleanup().melding.mottatt.isAfter(CLEANUP_MOTTATT_ETTER) }
+                .filterNot {_, entry -> entry.deserialiserTilCleanup().melding.søknadId == "b09f1a10-3bd7-46d7-bc51-21dee60d0492"}
                 .selectKey { _, value ->
                     value.deserialiserTilCleanup().melding.id
                 }
@@ -74,6 +79,7 @@ internal class CleanupStream(
 
             inputStream
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filter { _, entry -> entry.deserialiserTilCleanup().melding.mottatt.isAfter(K9BESKJED_MOTTATT_ETTER) }
                 .mapValues { soknadId, entry ->
                     process(k9DittnavVarsel, soknadId, entry) {
                         val cleanupMelding = entry.deserialiserTilCleanup()
