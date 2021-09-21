@@ -32,7 +32,7 @@ internal class JournalforingsStream(
     private companion object {
         private const val NAME = "JournalforingV1"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
-        private val JOURNALFØR_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-05T12:14:00.000+01")
+        private val JOURNALFØR_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T12:14:00.000+01")
 
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
