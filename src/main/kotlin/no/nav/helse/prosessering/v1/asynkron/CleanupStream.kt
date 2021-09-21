@@ -14,7 +14,6 @@ import no.nav.helse.prosessering.v1.tilK9Behovssekvens
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
-import java.time.ZonedDateTime
 
 internal class CleanupStream(
     kafkaConfig: KafkaConfig,
@@ -41,11 +40,9 @@ internal class CleanupStream(
             val tilK9DittnavVarsel = Topics.K9_DITTNAV_VARSEL
             val builder = StreamsBuilder()
             val inputStream = builder.stream(fraCleanup.name, fraCleanup.consumed)
-            val CLEANUP_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T12:14:00.000+01")
 
             inputStream
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .filter { _, entry -> entry.deserialiserTilCleanup().melding.mottatt.isAfter(CLEANUP_MOTTATT_ETTER) }
                 .selectKey { _, value ->
                     value.deserialiserTilCleanup().melding.id
                 }
