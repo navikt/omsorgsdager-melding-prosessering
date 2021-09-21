@@ -30,9 +30,9 @@ internal class JournalforingsStream(
     internal val healthy = ManagedStreamHealthy(stream)
 
     private companion object {
-        private const val NAME = "JournalforingV1"
+        private const val NAME = "JournalforingV2"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
-        private val JOURNALFØR_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T12:14:00.000+01")
+        private val JOURNALFØR_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T10:14:00.000+01")
 
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
@@ -43,6 +43,7 @@ internal class JournalforingsStream(
                 .stream(fraPreprossesert.name, fraPreprossesert.consumed)
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .filter {_, entry -> entry.deserialiserTilPreprosessertMelding().mottatt.isAfter(JOURNALFØR_MOTTATT_ETTER)}
+                .filterNot {_, entry -> entry.deserialiserTilPreprosessertMelding().søknadId == "b09f1a10-3bd7-46d7-bc51-21dee60d0492"}
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info(formaterStatuslogging(soknadId, "journalføres"))
