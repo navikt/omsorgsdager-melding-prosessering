@@ -12,7 +12,6 @@ import no.nav.helse.prosessering.v1.melding.Meldingstype
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
-import java.time.ZonedDateTime
 
 internal class JournalforingsStream(
     joarkGateway: JoarkGateway,
@@ -32,7 +31,6 @@ internal class JournalforingsStream(
     private companion object {
         private const val NAME = "JournalforingV2"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
-        private val JOURNALFØR_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T10:14:00.000+01")
 
         private fun topology(joarkGateway: JoarkGateway): Topology {
             val builder = StreamsBuilder()
@@ -42,8 +40,6 @@ internal class JournalforingsStream(
             val mapValues = builder
                 .stream(fraPreprossesert.name, fraPreprossesert.consumed)
                 .filter { _, entry -> 1 == entry.metadata.version }
-                .filter {_, entry -> entry.deserialiserTilPreprosessertMelding().mottatt.isAfter(JOURNALFØR_MOTTATT_ETTER)}
-                .filterNot {_, entry -> entry.deserialiserTilPreprosessertMelding().søknadId == "b09f1a10-3bd7-46d7-bc51-21dee60d0492"}
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info(formaterStatuslogging(soknadId, "journalføres"))
