@@ -9,6 +9,7 @@ import no.nav.helse.prosessering.v1.PreprosseseringV1Service
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
+import java.time.ZonedDateTime
 
 internal class PreprosseseringStream(
     preprosseseringV1Service: PreprosseseringV1Service,
@@ -33,10 +34,13 @@ internal class PreprosseseringStream(
             val builder = StreamsBuilder()
             val fromMottatt = Topics.MOTTATT
             val tilPreprossesert = Topics.PREPROSSESERT
+            val PREPROSESSER_MOTTATT_ETTER = ZonedDateTime.parse("2021-09-21T13:53:00.000+01")
 
             builder
                 .stream(fromMottatt.name, fromMottatt.consumed)
                 .filter { _, entry -> 1 == entry.metadata.version }
+                .filter { _, entry -> entry.deserialiserTilMelding().mottatt.isAfter(PREPROSESSER_MOTTATT_ETTER) }
+
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info(formaterStatuslogging(soknadId, "preprosesseres"))
