@@ -11,7 +11,7 @@ object SøknadUtils {
         søkerFødselsnummer: String = "02119970078",
         søknadId: String = UUID.randomUUID().toString(),
         id: String,
-        mottatt: ZonedDateTime = ZonedDateTime.now()
+        mottatt: ZonedDateTime = ZonedDateTime.now().plusDays(1)
     ) = Melding(
         språk = "nb",
         søknadId = søknadId,
