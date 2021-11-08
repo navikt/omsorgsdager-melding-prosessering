@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "2.1.6.0-1516d10"
+val dusseldorfKtorVersion = "3.1.6.4-e07c5ec"
 val k9RapidBehovVersion = "1.91b665d"
 val k9RapidOverføreOmsorgsdagerVersion = "1.6d743f4"
 val k9RapidFordeleOmsorgsdagerVersion = "1.3265f25"
@@ -10,22 +10,22 @@ val k9RapidOverføreKoronaOmsorgsdagerVersion = "1.3265f25"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
-val openhtmltopdfVersion = "1.0.9"
+val openhtmltopdfVersion = "1.0.10"
 val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
 val kafkaVersion = ext.get("kafkaVersion").toString() // Alligned med version fra kafka-embedded-env
-val handlebarsVersion = "4.1.2"
+val handlebarsVersion = "4.3.0"
 val fuelVersion = "2.3.1"
 
 val mainClass = "no.nav.helse.OmsorgsdagerMeldingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.5.21"
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    kotlin("jvm") version "1.5.31"
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/1516d1006074d9459dbeaa4b355f619ee04a4b77/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/e07c5ecf831928eb250c946e753aff2a3b798295/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -55,6 +55,14 @@ dependencies {
     // Kafka
     implementation("org.apache.kafka:kafka-streams:$kafkaVersion")
 
+    implementation(kotlin("stdlib-jdk8"))
+
+    //K9-Rapid
+    implementation("no.nav.k9.rapid:behov:$k9RapidBehovVersion")
+    implementation("no.nav.k9.rapid:overfore-omsorgsdager:$k9RapidOverføreOmsorgsdagerVersion")
+    implementation("no.nav.k9.rapid:fordele-omsorgsdager:$k9RapidFordeleOmsorgsdagerVersion")
+    implementation("no.nav.k9.rapid:overfore-korona-omsorgsdager:$k9RapidOverføreKoronaOmsorgsdagerVersion")
+
     // Test
     testImplementation ( "org.apache.kafka:kafka-clients:$kafkaVersion")
     testImplementation ( "no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
@@ -63,13 +71,7 @@ dependencies {
         exclude(group = "org.eclipse.jetty")
     }
     testImplementation("org.skyscreamer:jsonassert:1.5.0")
-    implementation(kotlin("stdlib-jdk8"))
-
-    //K9-Rapid
-    implementation("no.nav.k9.rapid:behov:$k9RapidBehovVersion")
-    implementation("no.nav.k9.rapid:overfore-omsorgsdager:$k9RapidOverføreOmsorgsdagerVersion")
-    implementation("no.nav.k9.rapid:fordele-omsorgsdager:$k9RapidFordeleOmsorgsdagerVersion")
-    implementation("no.nav.k9.rapid:overfore-korona-omsorgsdager:$k9RapidOverføreKoronaOmsorgsdagerVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
 }
 
@@ -85,8 +87,6 @@ repositories {
     }
     mavenCentral()
     maven("https://jitpack.io")
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://kotlin.bintray.com/kotlinx")
     maven("https://packages.confluent.io/maven/")
 }
 
@@ -95,9 +95,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_12
 }
 
-
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "12"
 }
 
 tasks.withType<ShadowJar> {
@@ -113,5 +112,9 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "7.1.1"
+    gradleVersion = "7.2"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

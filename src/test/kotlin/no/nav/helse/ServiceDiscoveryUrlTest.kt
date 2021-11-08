@@ -1,8 +1,8 @@
 package no.nav.helse
 
 import no.nav.helse.dokument.tilServiceDiscoveryUrl
-import org.junit.Test
 import java.net.URI
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ServiceDiscoveryUrlTest {

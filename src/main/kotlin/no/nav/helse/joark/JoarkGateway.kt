@@ -9,7 +9,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpPost
 import io.ktor.http.*
-import no.nav.helse.felles.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.health.HealthCheck
@@ -19,6 +18,9 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
+import no.nav.helse.felles.CorrelationId
+import no.nav.helse.prosessering.v1.melding.Meldingstype
+import no.nav.helse.prosessering.v1.melding.Meldingstype.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -59,34 +61,25 @@ class JoarkGateway(
         }
     }
 
-    suspend fun journalførKoronaOverføringsMelding(
+    suspend fun journalfør(
         norskIdent: String,
         mottatt: ZonedDateTime,
         navn: Navn,
         dokumenter: List<List<URI>>,
-        correlationId: CorrelationId
+        correlationId: CorrelationId,
+        type: Meldingstype
     ): JournalPostId {
-        return JoarkRequest(
-            norskIdent = norskIdent,
-            mottatt = mottatt,
-            dokumenter = dokumenter,
-            søkerNavn = navn
-        ).journalførMelding(koronaoverføringUrl, correlationId)
-    }
+        val url = when(type){
+            KORONA -> koronaoverføringUrl
+            FORDELING, OVERFORING -> omsorgsdagerDelingUrl
+        }
 
-    suspend fun journalførDelingsMelding(
-        norskIdent: String,
-        mottatt: ZonedDateTime,
-        navn: Navn,
-        dokumenter: List<List<URI>>,
-        correlationId: CorrelationId
-    ): JournalPostId {
         return JoarkRequest(
             norskIdent = norskIdent,
             mottatt = mottatt,
             dokumenter = dokumenter,
             søkerNavn = navn
-        ).journalførMelding(omsorgsdagerDelingUrl, correlationId)
+        ).journalførMelding(url, correlationId)
     }
 
     private suspend fun JoarkRequest.journalførMelding(url: URI, correlationId: CorrelationId): JournalPostId {

@@ -10,7 +10,6 @@ class PdfV1GeneratorTest {
 
     private companion object {
         private val generator = PdfV1Generator()
-        private val fødselsdato = LocalDate.now()
     }
 
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
@@ -68,7 +67,6 @@ class PdfV1GeneratorTest {
     }
 
     @Test
-    //@Ignore
     fun `opprett lesbar oppsummerings-PDF`() {
         genererOppsummeringsPdfer(true)
     }

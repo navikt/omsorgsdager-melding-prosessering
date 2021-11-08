@@ -6,12 +6,12 @@ import no.nav.helse.prosessering.v1.asynkron.Journalfort
 import no.nav.helse.prosessering.v1.melding.*
 import no.nav.helse.prosessering.v1.tilK9Behovssekvens
 import org.json.JSONObject
-import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
+import kotlin.test.Test
 
 class K9BehovssekvensTest {
 
