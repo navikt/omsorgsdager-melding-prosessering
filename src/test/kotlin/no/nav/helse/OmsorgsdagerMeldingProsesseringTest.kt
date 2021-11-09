@@ -13,7 +13,7 @@ import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertK9RapidFormat
 import org.json.JSONObject
-import org.junit.AfterClass
+import org.junit.jupiter.api.AfterAll
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -46,7 +46,6 @@ class OmsorgsdagerMeldingProsesseringTest {
 
         private val dNummerA = "55125314561"
         private val gyldigFodselsnummerA = "02119970078"
-        private val gyldigFodselsnummerB = "19066672169"
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)
@@ -77,7 +76,7 @@ class OmsorgsdagerMeldingProsesseringTest {
             engine.start(wait = true)
         }
 
-        @AfterClass
+        @AfterAll
         @JvmStatic
         fun tearDown() {
             logger.info("Tearing down")
