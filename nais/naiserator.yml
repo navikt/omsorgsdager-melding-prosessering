@@ -36,7 +36,7 @@ spec:
       cpu: 2000m
       memory: 1024Mi
     requests:
-      cpu: 200m
+      cpu: 40m
       memory: 512Mi
   strategy:
     type: Recreate
