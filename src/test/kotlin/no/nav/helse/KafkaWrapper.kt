@@ -1,6 +1,5 @@
 package no.nav.helse
 
-import junit.framework.Assert.assertEquals
 import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.felles.Metadata
@@ -21,6 +20,7 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
+import org.junit.Assert.assertEquals
 import java.time.Duration
 import java.util.*
 
