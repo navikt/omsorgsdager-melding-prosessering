@@ -70,7 +70,8 @@ class SøknadsformatTest {
               ],
               "fordeling": {
                 "mottakerType": "SAMVÆRSFORELDER",
-                "samværsavtale": ["http://localhost:8080/vedlegg/1"]
+                "samværsavtale": ["http://localhost:8080/vedlegg/1"],
+                "samværsavtaleVedleggId": []
               },
               "korona": {
                  "antallDagerSomSkalOverføres": 15,

@@ -55,15 +55,12 @@ class DokumentService(
     }
 
     internal suspend fun slettDokumeter(
-        urlBolks: List<List<URI>>,
+        dokumentIdBolks: List<List<String>>,
         dokumentEier: DokumentGateway.DokumentEier,
         correlationId : CorrelationId
     ) {
-        val urls = mutableListOf<URI>()
-        urlBolks.forEach { urls.addAll(it) }
-        logger.trace("Sletter ${urls.size} dokumenter")
         dokumentGateway.slettDokmenter(
-            urls = urls,
+            dokumentId = dokumentIdBolks.flatten(),
             dokumentEier = dokumentEier,
             correlationId = correlationId
         )

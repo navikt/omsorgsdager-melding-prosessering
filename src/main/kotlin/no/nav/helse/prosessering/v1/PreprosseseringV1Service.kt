@@ -6,9 +6,11 @@ import no.nav.helse.felles.CorrelationId
 import no.nav.helse.felles.Metadata
 import no.nav.helse.felles.SøknadId
 import no.nav.helse.prosessering.v1.melding.Melding
-import no.nav.helse.prosessering.v1.melding.Meldingstype
+import no.nav.helse.prosessering.v1.melding.Meldingstype.*
 import no.nav.helse.prosessering.v1.melding.PreprossesertMelding
 import org.slf4j.LoggerFactory
+import java.net.URI
+import java.net.URL
 
 internal class PreprosseseringV1Service(
     private val pdfV1Generator: PdfV1Generator,
@@ -24,58 +26,67 @@ internal class PreprosseseringV1Service(
         metadata: Metadata
     ): PreprossesertMelding {
         val søknadId = SøknadId(melding.søknadId)
-        logger.trace("Preprosseserer $søknadId")
+        logger.trace("Preprosesserer $søknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
         val dokumentEier = DokumentGateway.DokumentEier(melding.søker.fødselsnummer)
 
-        logger.trace("Genererer Oppsummerings-PDF av søknaden.")
-        val søknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
-        logger.trace("Generering av Oppsummerings-PDF OK.")
+        logger.info("Genererer Oppsummerings-PDF av søknaden.")
+        val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdf(melding)
 
-        logger.trace("Mellomlagrer Oppsummerings-PDF.")
-
-        val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
-            pdf = søknadOppsummeringPdf,
+        logger.info("Mellomlagrer Oppsummerings-PDF.")
+        val oppsummeringPdfDokumentId = dokumentService.lagreSoknadsOppsummeringPdf(
+            pdf = oppsummeringPdf,
             correlationId = correlationId,
             dokumentEier = dokumentEier,
             dokumentbeskrivelse = when(melding.type) {
-                Meldingstype.OVERFORING -> "Melding om deling av omsorgsdager"
-                Meldingstype.FORDELING -> "Melding om fordeling av omsorgsdager"
-                Meldingstype.KORONA -> "Melding om overføring av omsorgsdager"
+                OVERFORING -> "Melding om deling av omsorgsdager"
+                FORDELING -> "Melding om fordeling av omsorgsdager"
+                KORONA -> "Melding om overføring av omsorgsdager"
             }
-        )
+        ).dokumentId()
 
-        logger.trace("Mellomlagring av Oppsummerings-PDF OK")
 
-        logger.trace("Mellomlagrer Oppsummerings-JSON")
-
-        val søknadJsonUrl = dokumentService.lagreSoknadsMelding(
+        logger.info("Mellomlagrer Oppsummerings-JSON")
+        val søknadJsonDokumentId = dokumentService.lagreSoknadsMelding(
             melding = melding,
             dokumentEier = dokumentEier,
             correlationId = correlationId
-        )
-        logger.trace("Mellomlagrer Oppsummerings-JSON OK.")
+        ).dokumentId()
 
-        val komplettDokumentUrls = mutableListOf(
+        val komplettDokumentId = mutableListOf(
             listOf(
-                soknadOppsummeringPdfUrl,
-                søknadJsonUrl
+                oppsummeringPdfDokumentId,
+                søknadJsonDokumentId
             )
         )
 
-        if (melding.type == Meldingstype.FORDELING && melding.fordeling != null && melding.fordeling.samværsavtale.isNotEmpty()) {
-            melding.fordeling.samværsavtale.map { komplettDokumentUrls.add(listOf(it.toURI())) }
+        if(melding.type == FORDELING && melding.fordeling != null){
+            val fordeling = melding.fordeling
+            if(fordeling.samværsavtale.isNotEmpty()){
+                fordeling.samværsavtale.forEach { url ->
+                    komplettDokumentId.add(listOf(url.dokumentId()))
+                }
+            }
+
+            if(fordeling.samværsavtaleVedleggId.isNotEmpty()){
+                fordeling.samværsavtaleVedleggId.forEach { vedleggId ->
+                    komplettDokumentId.add(listOf(vedleggId))
+                }
+            }
         }
 
-        logger.trace("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
+        logger.info("Totalt ${komplettDokumentId.size} dokumentbolker med totalt ${komplettDokumentId.flatten().size} dokumenter.")
 
         val preprossesertMeldingV1 = PreprossesertMelding(
             melding = melding,
-            dokumentUrls = komplettDokumentUrls.toList()
+            dokumentId = komplettDokumentId.toList()
         )
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1
     }
 
 }
+
+fun URI.dokumentId(): String = this.toString().substringAfterLast("/")
+fun URL.dokumentId(): String = this.toString().substringAfterLast("/")

@@ -7,7 +7,6 @@ import no.nav.helse.prosessering.v1.melding.*
 import no.nav.helse.prosessering.v1.tilK9Behovssekvens
 import org.json.JSONObject
 import org.skyscreamer.jsonassert.JSONAssert
-import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
@@ -120,7 +119,7 @@ class K9BehovssekvensTest {
                     antallDagerSomSkalOverføres = 15
                 )
             ),
-            dokumentUrls = listOf(listOf(URI.create("http://localhost:8080/vedlegg/1")))
+            dokumentId = listOf(listOf(("1234")))
         )
     )
 }

@@ -52,7 +52,7 @@ internal class CleanupStream(
                         logger.info(formaterStatuslogging(cleanupMelding.melding.søknadId, "kjører cleanup"))
 
                         dokumentService.slettDokumeter(
-                            urlBolks = cleanupMelding.melding.dokumentUrls,
+                            dokumentIdBolks = cleanupMelding.melding.dokumentId,
                             dokumentEier = DokumentGateway.DokumentEier(cleanupMelding.melding.søker.fødselsnummer),
                             correlationId = CorrelationId(entry.metadata.correlationId)
                         )
