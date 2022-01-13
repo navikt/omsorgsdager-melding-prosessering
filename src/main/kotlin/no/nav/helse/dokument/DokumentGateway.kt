@@ -7,13 +7,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpPost
-import io.ktor.http.HttpHeaders
-import io.ktor.http.Url
+import io.ktor.http.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import no.nav.helse.felles.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.dusseldorf.ktor.client.buildURL
 import no.nav.helse.dusseldorf.ktor.core.Retry
@@ -24,6 +22,7 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
+import no.nav.helse.felles.CorrelationId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -97,17 +96,21 @@ class DokumentGateway(
     }
 
     internal suspend fun slettDokmenter(
-        urls: List<URI>,
+        dokumentId: List<String>,
         dokumentEier: DokumentEier,
         correlationId: CorrelationId
     ) {
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(sletteDokumentScopes).asAuthoriationHeader()
         coroutineScope {
             val deferred = mutableListOf<Deferred<Unit>>()
-            urls.forEach {
+            dokumentId.forEach { dokumentId ->
                 deferred.add(async {
+                    val url = Url.buildURL(
+                        baseUrl = completeUrl,
+                        pathParts = listOf(dokumentId)
+                    )
                     requestSlettDokument(
-                        url = it.tilServiceDiscoveryUrl(baseUrl = completeUrl),
+                        url = url,
                         correlationId = correlationId,
                         dokumentEier = dokumentEier,
                         authorizationHeader = authorizationHeader
@@ -211,18 +214,4 @@ class DokumentGateway(
         @JsonProperty("eiers_fødselsnummer") val eiersFødselsnummer: String
     )
 
-}
-
-fun URI.tilServiceDiscoveryUrl(baseUrl: URI): URI {
-    /*
-    K9-mellomlagring returnerer direktelenke til dokumentet. Prosessering bruker service-discovery, så må gjøres om.
-    Feks i dev blir denne url returnert: https://k9-dokument.nais.preprod.local/v1/dokument/xxx.xxx,
-    mens vi ønsker http://k9-dokument/v1/dokument/xxx.xxx
-     */
-    val idFraUrl = this.path.substringAfterLast("/")
-    val nyUrl = Url.buildURL(
-        baseUrl = baseUrl,
-        pathParts = listOf(idFraUrl)
-    )
-    return nyUrl
 }

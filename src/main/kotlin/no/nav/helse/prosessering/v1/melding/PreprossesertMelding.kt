@@ -1,6 +1,5 @@
 package no.nav.helse.prosessering.v1.melding
 
-import java.net.URI
 import java.time.ZonedDateTime
 
 data class PreprossesertMelding(
@@ -8,7 +7,7 @@ data class PreprossesertMelding(
     val søknadId: String,
     val språk: String,
     val mottatt: ZonedDateTime,
-    val dokumentUrls: List<List<URI>>,
+    val dokumentId: List<List<String>>,
     val harForståttRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val søker: Søker,
@@ -28,13 +27,13 @@ data class PreprossesertMelding(
 ) {
     internal constructor(
         melding: Melding,
-        dokumentUrls: List<List<URI>>
+        dokumentId: List<List<String>>
     ) : this(
         id = melding.id,
         søknadId = melding.søknadId,
         språk = melding.språk,
         mottatt = melding.mottatt,
-        dokumentUrls = dokumentUrls,
+        dokumentId = dokumentId,
         harForståttRettigheterOgPlikter = melding.harForståttRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
         søker = melding.søker,

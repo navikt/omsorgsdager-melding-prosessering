@@ -1,6 +1,5 @@
 package no.nav.helse.prosessering.v1.melding
 
-import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.net.URL
 import java.time.LocalDate
@@ -45,7 +44,8 @@ data class KoronaStengingsperiode(
 
 data class FordelingsMelding(
     val mottakerType: MottakerType,
-    val samværsavtale: List<URL>
+    val samværsavtale: List<URL> = listOf(),
+    val samværsavtaleVedleggId: List<String> = listOf()
 )
 
 data class OverføringsMelding(

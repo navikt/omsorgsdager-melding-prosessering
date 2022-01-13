@@ -11,7 +11,7 @@ private val generellCounter = Counter.build()
 
 internal fun PreprossesertMelding.reportMetrics(){
     if(this.fordeling != null){
-        if(fordeling.samværsavtale.isEmpty()) generellCounter.labels("vedlegg", "Nei").inc()
+        if(fordeling.samværsavtale.isEmpty() && fordeling.samværsavtaleVedleggId.isEmpty()) generellCounter.labels("vedlegg", "Nei").inc()
         else generellCounter.labels("vedlegg", "Ja").inc()
     }
 }
