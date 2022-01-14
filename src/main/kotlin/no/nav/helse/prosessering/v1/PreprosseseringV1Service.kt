@@ -62,15 +62,8 @@ internal class PreprosseseringV1Service(
         )
 
         if(melding.type == FORDELING && melding.fordeling != null){
-            val fordeling = melding.fordeling
-            if(fordeling.samværsavtale.isNotEmpty()){
-                fordeling.samværsavtale.forEach { url ->
-                    komplettDokumentId.add(listOf(url.dokumentId()))
-                }
-            }
-
-            if(fordeling.samværsavtaleVedleggId.isNotEmpty()){
-                fordeling.samværsavtaleVedleggId.forEach { vedleggId ->
+            if(melding.fordeling.samværsavtaleVedleggId.isNotEmpty()){
+                melding.fordeling.samværsavtaleVedleggId.forEach { vedleggId ->
                     komplettDokumentId.add(listOf(vedleggId))
                 }
             }

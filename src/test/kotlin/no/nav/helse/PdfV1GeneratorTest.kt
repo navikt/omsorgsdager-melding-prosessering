@@ -33,8 +33,7 @@ class PdfV1GeneratorTest {
                 overføring = null,
                 fordeling = FordelingsMelding(
                     mottakerType = MottakerType.SAMVÆRSFORELDER,
-                    samværsavtale = listOf(),
-                    samværsavtaleVedleggId = listOf()
+                    samværsavtaleVedleggId = listOf("123", "456")
                 )
             )
         )
