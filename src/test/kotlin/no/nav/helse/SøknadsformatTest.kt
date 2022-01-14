@@ -6,7 +6,6 @@ import no.nav.helse.prosessering.v1.melding.KoronaOverføringMelding
 import no.nav.helse.prosessering.v1.melding.KoronaStengingsperiode
 import no.nav.helse.prosessering.v1.melding.MottakerType
 import org.skyscreamer.jsonassert.JSONAssert
-import java.net.URL
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.Test
@@ -21,7 +20,7 @@ class SøknadsformatTest {
             id = "01ERQ0AXTRPDV6NN70NMTYC0EX",
             søknadId = "d559c242-e95f-4dda-8d59-7d0b06985bb3"
         ).copy(
-            fordeling = FordelingsMelding(MottakerType.SAMVÆRSFORELDER, listOf(URL("http://localhost:8080/vedlegg/1"))),
+            fordeling = FordelingsMelding(MottakerType.SAMVÆRSFORELDER, listOf("1234")),
             korona = KoronaOverføringMelding(
                 antallDagerSomSkalOverføres = 15,
                 stengingsperiode = KoronaStengingsperiode(
@@ -70,8 +69,7 @@ class SøknadsformatTest {
               ],
               "fordeling": {
                 "mottakerType": "SAMVÆRSFORELDER",
-                "samværsavtale": ["http://localhost:8080/vedlegg/1"],
-                "samværsavtaleVedleggId": []
+                "samværsavtaleVedleggId": ["1234"]
               },
               "korona": {
                  "antallDagerSomSkalOverføres": 15,
