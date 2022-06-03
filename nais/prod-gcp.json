@@ -7,12 +7,10 @@
   "tenant": "nav.no",
   "ingresses": [],
   "env": {
-    "K9_JOARK_EXTERNAL" : "k9-joark.prod-fss-pub.nais.io",
-    "K9_JOARK_BASE_URL": "https://k9-joark.prod-fss-pub.nais.io",
+    "K9_JOARK_BASE_URL": "http://k9-joark",
     "K9_MELLOMLAGRING_SERVICE_DISCOVERY": "http://k9-mellomlagring",
     "K9_MELLOMLAGRING_CLIENT_ID": "19aaf0b2-f40a-4a64-bf7f-fd2dd62f0552/.default",
-    "K9_JOARK_CLIENT_ID": "cb751642-883c-48d3-9f82-06cc72c3e4b9/.default",
-    "KAFKA_BOOTSTRAP_SERVERS": "a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443",
+    "K9_JOARK_CLIENT_ID": "ca07da88-66d6-4063-8990-9d24589c38e0/.default",
     "KAFKA_AUTO_OFFSET_RESET": "none"
   },
   "slack-channel": "sif-alerts",
