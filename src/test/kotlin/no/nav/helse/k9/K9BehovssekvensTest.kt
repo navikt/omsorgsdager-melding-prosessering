@@ -25,7 +25,7 @@ class K9BehovssekvensTest {
             //language=json
             """
             {
-              "@id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "@behovssekvensId": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
               "@type": "Behovssekvens",
               "@versjon": "1",
               "@correlationId": "12345678910",

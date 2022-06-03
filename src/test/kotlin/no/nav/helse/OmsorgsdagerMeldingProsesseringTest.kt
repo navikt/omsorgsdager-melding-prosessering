@@ -187,7 +187,7 @@ class OmsorgsdagerMeldingProsesseringTest {
 
         assertEquals(rawJson.getJSONArray("@behovsrekkefølge").getString(0), "OverføreOmsorgsdager")
         assertEquals(rawJson.getString("@type"), "Behovssekvens")
-        assertEquals(rawJson.getString("@id"), id)
+        assertEquals(rawJson.getString("@behovssekvensId"), id)
 
         assertNotNull(rawJson.getString("@correlationId"))
         assertNotNull(rawJson.getJSONObject("@behov"))

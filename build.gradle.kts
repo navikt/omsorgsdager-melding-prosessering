@@ -3,10 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val dusseldorfKtorVersion = "3.1.6.7-05da1a0"
 
-val k9RapidBehovVersion = "1.91b665d"
-val k9RapidOverføreOmsorgsdagerVersion = "1.6d743f4"
-val k9RapidFordeleOmsorgsdagerVersion = "1.3265f25"
-val k9RapidOverføreKoronaOmsorgsdagerVersion = "1.3265f25"
+val k9RapidVersion = "1.20220602105039-77944ce"
 
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
@@ -59,10 +56,10 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     //K9-Rapid
-    implementation("no.nav.k9.rapid:behov:$k9RapidBehovVersion")
-    implementation("no.nav.k9.rapid:overfore-omsorgsdager:$k9RapidOverføreOmsorgsdagerVersion")
-    implementation("no.nav.k9.rapid:fordele-omsorgsdager:$k9RapidFordeleOmsorgsdagerVersion")
-    implementation("no.nav.k9.rapid:overfore-korona-omsorgsdager:$k9RapidOverføreKoronaOmsorgsdagerVersion")
+    implementation("no.nav.k9.rapid:behov:$k9RapidVersion")
+    implementation("no.nav.k9.rapid:overfore-omsorgsdager:$k9RapidVersion")
+    implementation("no.nav.k9.rapid:fordele-omsorgsdager:$k9RapidVersion")
+    implementation("no.nav.k9.rapid:overfore-korona-omsorgsdager:$k9RapidVersion")
 
     // Test
     testImplementation ( "org.apache.kafka:kafka-clients:$kafkaVersion")
