@@ -46,7 +46,7 @@ class OmsorgsdagerMeldingProsesseringWithMocks {
                 }
             })
 
-            withApplication { no.nav.helse.main(testArgs) }
+            testApplication { no.nav.helse.main(testArgs) }
         }
     }
 }
