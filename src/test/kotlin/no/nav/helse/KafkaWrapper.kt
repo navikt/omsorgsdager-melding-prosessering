@@ -91,7 +91,7 @@ fun KafkaEnvironment.meldingsProducer() = KafkaProducer(
 
 fun KafkaConsumer<String, String>.hentK9RapidMelding(
     id: String,
-    maxWaitInSeconds: Long = 20
+    maxWaitInSeconds: Long = 60
 ): String {
     val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
     while (System.currentTimeMillis() < end) {
