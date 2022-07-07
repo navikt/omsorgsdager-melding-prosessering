@@ -17,7 +17,7 @@ val fuelVersion = "2.3.1"
 val mainClass = "no.nav.helse.OmsorgsdagerMeldingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.7.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
