@@ -67,6 +67,7 @@ class K9BehovssekvensTest {
         val (id, løsning) = gyldigCleanupMelding.tilK9Behovssekvens().keyValue
         val behovssekvensLøsningSomJson = JSONObject(løsning)
         behovssekvensLøsningSomJson.remove("@opprettet")
+        behovssekvensLøsningSomJson.remove("@behovOpprettet")
         behovssekvensLøsningSomJson.remove("@sistEndret")
 
         JSONAssert.assertEquals(forventetBehovssekvensJson, behovssekvensLøsningSomJson, true)
