@@ -4,7 +4,6 @@
   "namespace": "dusseldorf",
   "kafka-pool" : "nav-dev",
   "team": "dusseldorf",
-  "ingresses": [],
   "tenant": "trygdeetaten.no",
   "env": {
     "K9_JOARK_BASE_URL": "http://k9-joark",

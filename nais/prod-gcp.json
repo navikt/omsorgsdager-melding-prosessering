@@ -5,7 +5,6 @@
   "kafka-pool" : "nav-prod",
   "team": "dusseldorf",
   "tenant": "nav.no",
-  "ingresses": [],
   "env": {
     "K9_JOARK_BASE_URL": "http://k9-joark",
     "K9_MELLOMLAGRING_SERVICE_DISCOVERY": "http://k9-mellomlagring",

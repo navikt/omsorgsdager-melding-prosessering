@@ -17,8 +17,6 @@ spec:
       rules:
         - application: k9-mellomlagring
         - application: k9-joark
-      external:
-        - host: oauth2.googleapis.com
   kafka:
     pool: {{kafka-pool}}
   liveness:
@@ -47,8 +45,6 @@ spec:
   prometheus:
     enabled: true
     path: /metrics
-  envFrom:
-    - secret: omsorgsdager-melding-prosessering.sts-credentials
   env:
   {{#each env}}
      - name: {{@key}}
