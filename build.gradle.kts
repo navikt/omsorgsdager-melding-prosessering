@@ -1,9 +1,9 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "3.2.1.1-15e2e63"
+val dusseldorfKtorVersion = "3.2.1.2-93aa998"
 
-val k9RapidVersion = "1.20220824120614-3be8319"
+val k9RapidVersion = "1.20221007103720-75312fe"
 
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
@@ -11,20 +11,20 @@ val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 val openhtmltopdfVersion = "1.0.10"
 val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
 val kafkaVersion = ext.get("kafkaVersion").toString() // Alligned med version fra kafka-embedded-env
-val handlebarsVersion = "4.3.0"
+val handlebarsVersion = "4.3.1"
 val fuelVersion = "2.3.1"
 val jsonassertVersion = "1.5.1"
 
 val mainClass = "no.nav.helse.OmsorgsdagerMeldingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.7.20"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/a615e0cd38696e407239902c9017a5a73a011c34/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/b18c5feeca2840e6812eb805d50937d7aa0aca6a/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {

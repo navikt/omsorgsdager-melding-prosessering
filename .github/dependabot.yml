@@ -1,4 +1,11 @@
 version: 2
+registries:
+  k9-format:
+    type: maven-repository
+    url: https://maven.pkg.github.com/navikt/k9-format
+    username: x-access-token
+    password: ${{secrets.DEPENDABOT_TOKEN}}
+
 updates:
   - package-ecosystem: github-actions
     directory: "/"
@@ -7,6 +14,13 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: daily
+    registries:
+      - k9-format
+
+  - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: daily
