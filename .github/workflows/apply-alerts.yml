@@ -1,4 +1,3 @@
-# This workflow trigger on push to any branch.
 name: Alerts
 on:
   push:
@@ -17,7 +16,7 @@ jobs:
     if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.ref, 'refs/heads/master') # Deploy if branch is either master or dev-*
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -25,12 +24,12 @@ jobs:
           RESOURCE: nais/alerterator.yml
           VARS: nais/dev-gcp.json
 
-  deploy-prod-fss:
+  deploy-prod-gcp:
     name: Deploy to prod-gcp
     if: startsWith(github.ref, 'refs/heads/master')  # If the branch is master
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
