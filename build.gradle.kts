@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "3.2.1.2-ba1edd2"
+val dusseldorfKtorVersion = "3.2.1.3-2e5bea9"
 
 val k9RapidVersion = "1.20221007103720-75312fe"
 
