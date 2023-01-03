@@ -5,6 +5,8 @@ metadata:
   namespace: dusseldorf
   labels:
     team: dusseldorf
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
 spec:
   pool: {{kafka-pool}}
   config: # optional; all fields are optional too; defaults shown
@@ -31,6 +33,8 @@ metadata:
   namespace: dusseldorf
   labels:
     team: dusseldorf
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
 spec:
   pool: {{kafka-pool}}
   config:  # optional; all fields are optional too; defaults shown
@@ -54,6 +58,8 @@ metadata:
   namespace: dusseldorf
   labels:
     team: dusseldorf
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
 spec:
   pool: {{kafka-pool}}
   config:  # optional; all fields are optional too; defaults shown
